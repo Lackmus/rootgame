@@ -182,7 +182,7 @@ public class NPC {
         return npcType + ", " + faction + ", Loyalty: " + loyaltyString +  
             "\nName: " + name + ", Species: " + race +  
             "\nOrigin: " + origin.getName() +
-            "\nDestinationPath: " + destinationPath.toString();    
+            "\nDestination: " + (destinationPath.isEmpty() ? "None" : destinationPath.peek());    
     }
 
     
