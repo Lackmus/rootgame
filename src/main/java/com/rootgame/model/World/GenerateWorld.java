@@ -329,10 +329,10 @@ public class GenerateWorld {
      */
     public static void populateWorld(List<WorldObject> settlements, List<WorldObject> paths) {
         for (WorldObject settlement : settlements) {
-            populateClearing(settlement);
+            populateSettlement(settlement);
         }
         for (WorldObject path : paths) {
-            populatePath(path);
+            populatePathWithRougue(path);
         }
     }
     
@@ -343,28 +343,41 @@ public class GenerateWorld {
      * @param clearing an object of type Clearing, which represents a location in a game world where
      * non-player characters (NPCs) can be placed.
      */
-    private static void populateClearing(WorldObject settlement) {
-        int soldierCount = 4;
-        int civilianCount = 4;
-        int traderCount = 2;
-        settlement.addNPC(NPCFactory.createNPC(NPCType.LEADER, settlement.getFaction(), settlement));
+    private static void populateSettlement(WorldObject settlement) {
+       
+        NPCType type = NPCType.LEADER;
+        addCreatedNPC(type, settlement.getFaction(), settlement);  
+            
 
-        for (int i = 0; i < 10; i++) {
-            if (soldierCount > 0) {
-                settlement.addNPC(NPCFactory.createNPC(NPCType.SOLDIER, settlement.getFaction(), settlement));
-                soldierCount--;
-            } else if (traderCount > 0) {
-                settlement.addNPC(NPCFactory.createNPC(NPCType.TRADER, settlement.getFaction(), settlement));
-                traderCount--;
-            } else if (civilianCount > 0) {
-                settlement.addNPC(NPCFactory.createNPC(NPCType.CIVILIAN, settlement.getFaction(), settlement));
-                civilianCount--;
+        for (int i = 0; i < 11; i++) {
+            switch(i){
+                case 0: case 1: case 2: case 3:
+                    type = NPCType.SOLDIER;
+                    break;
+                case 4: case 5: case 6: case 7:
+                    type = NPCType.CIVILIAN;
+                    break;
+                case 8: case 9:
+                    type = NPCType.TRADER;
+                    break;
+                default:
+                    if (Math.random() < 0.5) {
+                        type = Math.random() < 0.5? NPCType.CARAVAN : NPCType.MERCENARY;
+                    }
+                    break;
             }
+            addCreatedNPC(type, settlement.getFaction(), settlement);
         }
     }
 
-    private static void populatePath(WorldObject path) {
-        path.addNPC(NPCFactory.createNPC(NPCType.CARAVAN, path.getFaction(), path));       
+    private static void addCreatedNPC(NPCType type, String faction, WorldObject location) {
+        location.addNPC (NPCFactory.createNPC(type, faction, location));
+    }
+
+    private static void populatePathWithRougue(WorldObject path) {
+        if (path.getFaction() == "Neutral" && Math.random() < 0.5) {
+           addCreatedNPC(NPCType.BANDIT, path.getFaction(), path);
+        }      
     }
 
     /****************

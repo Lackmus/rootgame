@@ -4,7 +4,8 @@ public enum NPCType {
     SOLDIER,
     CIVILIAN,
     TRADER,
-    ROGUE,
+    BANDIT,
     CARAVAN,
-    LEADER;    
+    LEADER,
+    MERCENARY;    
 }

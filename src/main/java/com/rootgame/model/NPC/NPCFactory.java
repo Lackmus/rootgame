@@ -43,12 +43,15 @@ public class NPCFactory {
                 if (faction != "Neutral" && Math.random() > 0.5)
                     faction = "Neutral";
                 break;
-            case ROGUE:
+            case BANDIT:
                 faction = "Neutral";
                 break;
             case CARAVAN:
                 faction = "Neutral";
-                break;      
+                break; 
+            case MERCENARY:
+                faction = "Neutral";
+                break;     
             default:  
                 break;
         }

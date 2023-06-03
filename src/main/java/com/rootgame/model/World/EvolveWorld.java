@@ -50,7 +50,7 @@ public class EvolveWorld {
             case TRADER:
                 evolveTrader(npc);
                 break;
-            case ROGUE:
+            case BANDIT:
                 evolveRogue(npc);
                 break;
             default:
