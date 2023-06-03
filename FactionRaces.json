@@ -1,0 +1,275 @@
+[
+    {
+        "Root": 
+        [ 
+            {
+                "worldobjects": 
+                [
+                    {
+                        "settlementnames": [
+                            "Underleaf", "Oakenhold", "Graniteborn", "Frupston",
+                            "Pintin's Pass", "Hunter's Grove", "Skybourough", "Tidemire", 
+                            "Hawksmarsh", "Silver Meadows", "Tillery", "Coppergate"
+                        ],
+                        "otherobjects": null
+
+                    }
+                ],
+
+                "factions": 
+                [       
+                    {     
+                        "faction":  " Marquise de Cat",      
+                        "color":    "RED",       
+                        "races": [ 
+                            
+                            {
+                                "name": "Maine Coon",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]
+                            },
+                            {
+                                "name": "Siamese",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]                            
+                            },
+                            {
+                                "name": "Persian",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]                            
+                            },
+                            {
+                                "name": "Bengal",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]                            
+                            },
+                            {
+                                "name": "Sphynx",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]                           
+                            },
+                            {
+                                "name": "Ragdoll",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]                            
+                            },
+                            {
+                                "name": "Scottish Fold",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]
+                            },
+                            {
+                                "name": "Abyssinian",
+                                "forenames":        ["Whiskers", "Oliver", "Luna", "Simba", "Bella", "Leo", "Milo", "Lucy", "Max", "Chloe", "Charlie", "Lily", "Oscar", "Sophie", "Tiger", "Mia", "Shadow", "Molly", "Jasper", "Cleo", "Felix", "Nala", "Rocky", "Zoe", "Gizmo", "Lola", "Smokey", "Stella", "Coco", "Mittens"],
+                                "surnames":         ["Whiskerpaws", "Meowington", "Furball", "Purrington", "Clawsome", "Scratchington", "Pawsley", "Whiskertail", "Fuzzytail", "Snugglepaws", "Whiskerbottom", "Fluffington", "Purrcat", "Whiskerface", "Pounce", "Cuddlepaws", "Whiskerclaw", "Furrgrove", "Snuggletail", "Mittensworth", "Purrkins", "Fluffypaws", "Snugglesmith", "Pawsworth", "Clawson", "Muffintail", "Whiskerpurr", "Furrglade", "Purrkinsworth", "Cuddleclaw", "Snugglesworth"]
+                            }
+                            
+                            
+                        ]
+                    },
+                    {
+                        "faction":  "Eyrie Dynasties",   
+                        "color":    "BLUE",
+                        "races": [  
+                            {
+                                "name": "Sparrow",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Robin",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Blue Jay",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Cardinal",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Hawk",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Parrot",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Penguin",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Flamingo",
+                                "forenames":        ["Sparrow", "Robin", "Bluejay", "Finch", "Cardinal", "Wren", "Oscar", "Luna", "Kiwi", "Phoenix", "Piper", "Blaze", "Coco", "Skye", "Harmony", "Mango", "Rio", "Zephyr", "Aria", "Raven", "Sunny", "Jasper", "Willow", "Ziggy", "Saffron", "Loki", "Iris", "Echo", "Basil", "Opal"],
+                                "surnames":         ["Wingfield", "Feathersmith", "Sparrowson", "Hawksworth", "Robinwood", "Eagleton", "Ravensong", "Falconer", "Wrenfield", "Osprey", "Starling", "Finchley", "Heronstone", "Blackbird", "Peregrine", "Dovecote", "Larkspur", "Owlsworth", "Swanley", "Peacock", "Magpie", "Hawthorne", "Siskin", "Kingfisher", "Jaywing", "Pelican", "Rookwood", "Gulliver", "Cormorant", "Partridge"]
+                            },
+                            {
+                                "name": "Chicken",
+                                "forenames":        ["Feathers", "Nugget", "Peep", "Cluckers", "Sunny", "Popcorn", "Biscuit", "Daisy", "Rooster", "Penny", "Fluffy", "Buddy", "Ginger", "Pepper", "Coco", "Honey", "Sparkle", "Petal", "Scratchy", "Marshmallow", "Cinnamon", "Chickadee", "Dottie", "Waffles", "Buttercup", "Spike", "Pippin", "Bella", "Noodle", "Hopper"],
+                                "surnames":         ["Feathersworth", "Cluckington", "Peckerson", "Eggleton", "Roosterman", "Henley", "Cockadoodle", "Nesterson", "Fowlsworth", "Scratchington", "Pullet", "Beakerson", "Wingate", "Rufflebottom", "Cooperton", "Bantam", "Eggsworth", "Clucksworth", "Henrickson", "Peckworth", "Featherbottom", "Roosterson", "Cockleberry", "Cluckens", "Plumfeather", "Fluffington", "Nesterson", "Eggleberry", "Peckerson", "Brooder"]
+                            },
+                            {
+                                "name": "Owl",
+                                "forenames":        ["Hoot", "Feather", "Winston", "Sage", "Luna", "Oscar", "Athena", "Gizmo", "Iris", "Oliver", "Willow", "Quill", "Bella", "Gus", "Opal", "Pippin", "Echo", "Archie", "Hazel", "Midnight", "Milo", "Celeste", "Percy", "Olive", "Jasper", "Mystic", "Coco", "Atlas", "Zara", "Whisper"],
+                                "surnames":         ["Featherwing", "Moonshadow", "Hootsworth", "Nightwing", "Whisperwing", "Starfeather", "Owlsong", "Shadowwing", "Silvershade", "Wisebeak", "Skyfeather", "Glimmerwing", "Starseeker", "Moonfeather", "Owlseye", "Silentwing", "Swoopflight", "Hallowsong", "Gentlenight", "Duskfeather", "Echosong", "Swiftwing", "Talonheart", "Dreamfeather", "Luminocturna", "Wingsong", "Silvereye", "Mistfeather", "Sunsetwing", "Nightshade"]
+                            }
+
+                        ]   
+                    },
+                    {
+                        "faction":  "Woodland Alliance",
+                        "color":    "DARKGREEN",
+                
+                        "races": [
+                            {
+                                "name": "Wolf",
+                                "forenames":        ["Luna", "Shadow", "Alpha", "Fang", "Aurora", "Hunter", "Raven", "Blaze", "Storm", "Saber", "Willow", "Kai", "Scarlet", "Thunder", "Rogue", "Loki", "Nova", "Arrow", "Winter", "Ash", "Zara", "Ragnar", "Mystic", "Zephyr", "Lobo", "Skylar", "Riley", "Aries", "Rusty", "Lupin"],
+                                "surnames":         ["Moonshadow", "Howlstrom", "Silvermane", "Winterfang", "Stormcaller", "Frostbite", "Wildheart", "Bloodmoon", "Ironclaw", "Swiftstrike", "Darkthorn", "Whitewolf", "Ravenpaw", "Shadowfang", "Stormrunner", "Nightshade", "Blackmane", "Ashenfur", "Starkiller", "Blazefang", "Moonchaser", "Thunderstrike", "Grimmjaw", "Silentpelt", "Steelclaw", "Savageheart", "Moonrunner", "Shadowtail", "Stormblade", "Lunaris", "Duskfang"]
+                            },
+                            {
+                                "name": "Fox",
+                                "forenames":        ["Red", "Rusty", "Sly", "Willow", "Copper", "Shadow", "Scarlet", "Amber", "Hunter", "Meadow", "Finn", "Maple", "Jasper", "Hazel", "Rowan", "Luna", "Ash", "Ember", "Phoenix", "Fiona", "Crimson", "Rocco", "Wren", "Sage", "Marlowe", "Zephyr", "Olive", "Leo", "Ivy", "Echo"],
+                                "surnames":         ["Redtail", "Swiftfur", "Whisperpaw", "Silverclaw", "Amberstripe", "Willowbrush", "Russetfur", "Shadowtail", "Goldeneye", "Emberpelt", "Sablethorn", "Copperfang", "Scarletfur", "Ashenwhisker", "Hazelclaw", "Vixenheart", "Sorrelmuzzle", "Brackenfur", "Juniperfur", "Mistysky", "Thornwhisper", "Ravenstrike", "Meadowtail", "Cinderfoot", "Blazefur", "Autumnleaf", "Stormclaw", "Maplethorn", "Briarfang", "Tawnywhisper"]
+                            },
+                            {
+                                "name": "Rabbit",
+                                "forenames":        ["Thumper", "Cotton", "Biscuit", "Hazel", "Oreo", "Bella", "Coco", "Daisy", "Luna", "Fuzzy", "Peanut", "Oliver", "Nibbles", "Snowball", "Mocha", "Hopper", "Poppy", "Charlie", "Willow", "Lola", "Snickers", "Marshmallow", "Bunny", "Cupcake", "Caramel", "Honey", "Pippin", "Pumpkin", "Velvet", "Waffles"],
+                                "surnames":         ["Hoppington", "Bunnyworth", "Cottontail", "Warren", "Thumper", "Flopsy", "Hopkins", "McHopster", "Nibbles", "Whiskerton", "Fluffytail", "Wigglesworth", "Binkerton", "Bounceworthy", "Cottontop", "Harewood", "Floofington", "Jumpsalot", "Wiggletail", "Nosewiggle", "Bouncyfoot", "Cuddlebuns", "Lopsworth", "Nibbleton", "Pouncepaws", "Woollyhop", "Binkerbop", "Cottonsocks", "Fluffernose", "Wiggletop"]
+                            },
+                            {
+                                "name": "Squirrel",
+                                "forenames":        ["Acorn", "Almond", "Amber", "Biscuit", "Chestnut", "Cinnamon", "Coco", "Hazel", "Maple", "Nutmeg", "Olive", "Peanut", "Pecan", "Poppy", "Sage", "Sandy", "Willow", "Walnut", "Fern", "Ginger", "Cedar", "Juniper", "Bramble", "Pine", "Rowan", "Thistle", "Daisy", "Saffron", "Basil", "Hickory"],
+                                "surnames":         ["Acorn", "Bushytail", "Nutmeg", "Hickory", "Whiskertail", "Pinecone", "Chestnut", "Scurry", "Walnut", "Fuzzytail", "Mapleleaf", "Squirrelly", "Cheeks", "Peanut", "Branch", "Hazelnut", "Scamper", "Oakwood", "Treetop", "Redtail", "Chatter", "Leafpaw", "Nibbler", "Copper", "Skitter", "Almond", "Furball", "Sagebrush", "Rustle", "Bramble"]
+                            },
+                            {
+                                "name": "Raccoon",
+                                "forenames":        ["Rocky", "Bandit", "Shadow", "Smokey", "Mischief", "Rascal", "Scout", "Whiskers", "Gizmo", "Milo", "Oreo", "Charlie", "Sunny", "Patch", "Jasper", "Marbles", "Finn", "Coco", "Leo", "Max", "Pepper", "Luna", "Simba", "Chester", "Buddy", "Oliver", "Penny", "Hazel", "Ace", "Willow"],
+                                "surnames":         ["Bandit", "Masker", "Rascal", "Slytail", "Stripes", "Paws", "Stealth", "Coonsmith", "Nimble", "Ringtail", "Mischief", "Cleverpaws", "Whisker", "Scavenger", "Ringson", "Nightshade", "Grafter", "Thiefson", "Quickpaws", "Gloved", "Cunning", "Noser", "Sneaker", "Trashpaw", "Mischievous", "Ringed", "Crafton", "Masked", "Slypaw", "Shadowtail"]
+                            },
+                            {
+                                "name": "Deer",
+                                "forenames":        ["Buck", "Daisy", "Fawn", "Willow", "Hunter", "Lily", "Ranger", "Rosie", "Aspen", "Sage", "Forest", "Meadow", "Shadow", "Clover", "River", "Juniper", "Grace", "Cedar", "Dandelion", "Thistle", "Autumn", "Luna", "Storm", "Hazel", "Arrow", "Ivy", "Rocky", "Blossom", "Oak", "Whisper"],
+                                "surnames":         ["Hartfield", "Meadows", "Woods", "Buckley", "Stagwood", "Thornhill", "Fallowfield", "Hawthorne", "Whitetail", "Dunsworth", "Hazelwood", "Fernwood", "Antlerwood", "Glenhart", "Riverside", "Doebrook", "Mossfield", "Crestwood", "Willowbrook", "Deerbourne", "Autumnleaf", "Meadowlark", "Hartley", "Branchwood", "Hornby", "Mistwood", "Elkridge", "Shadewood", "Sylvanvale", "Buckhart"]
+                            },
+                            {
+                                "name": "Bear",
+                                "forenames":        ["Bruno", "Teddy", "Baloo", "Honey", "Paddington", "Winnie", "Grizzly", "Kodiak", "Yogi", "Buddy", "Smokey", "Cocoa", "Koda", "Bailey", "Archie", "Rocky", "Leo", "Oliver", "Max", "Charlie", "Milo", "Oscar", "Jack", "Henry", "Sam", "Bearington", "Hunter", "Rufus", "Finn", "Gus"],
+                                "surnames":         ["Grizzly", "Brown", "Polar", "Black", "Kodiak", "Teddy", "Cub", "Honey", "Wild", "Claw", "Roar", "Forest", "Maul", "Rumble", "Fuzzy", "Savage", "Strong", "Giant", "Beast", "Woods", "Majestic", "Hibernation", "Gentle", "Fierce", "Hunter", "Snuggle", "Rocky", "Mountain", "Brave", "Cozy"]
+                            },
+                            {
+                                "name": "Boar",
+                                "forenames":        ["Bramble", "Tusk", "Snort", "Hamlet", "Thor", "Fang", "Razor", "Winston", "Bruno", "Goliath", "Hercules", "Truffle", "Spike", "Oliver", "Percy", "Mortimer", "Zeus", "Rocky", "Tank", "Brutus", "Gus", "Baron", "Oscar", "Rufus", "Archie", "Moose", "Rumble", "Boomer", "Simba", "Basil"],
+                                "surnames":         ["Wilder", "Stout", "Strongtusk", "Hammerhoof", "Ironhide", "Goresnout", "Thundershield", "Rampant", "Brutetusk", "Darkmane", "Wildfang", "Razorback", "Steeljaw", "Thornhide", "Furymane", "Thunderhoof", "Boarsbane", "Rocktusk", "Bristlesnout", "Tusken", "Stormsnout", "Savagejaw", "Ironhoof", "Swifttusk", "Rumblehoof", "Thunderhooves", "Warboar", "Braveheart", "Tuskbreaker", "Ironfur"]
+                            },
+                            {
+                                "name": "Mouse",
+                                "forenames":        ["Whiskers", "Nibbles", "Cheese", "Squeaky", "Peanut", "Cheddar", "Minnie", "Mochi", "Cocoa", "Sniffles", "Gouda", "Fuzzy", "Popcorn", "Cupcake", "Scamper", "Marshmallow", "Wiggles", "Biscuit", "Pipsqueak", "Nugget", "Sprinkle", "Button", "Pumpkin", "Morsel", "Cinnamon", "Skitter", "Cupboard", "Twinkle", "Scooter", "Fluffball"],
+                                "surnames":         ["Whiskerbottom", "Nibbleton", "Squeakins", "Cheesefield", "Fuzzypaws", "Rodentsson", "Tinytail", "Cheddarclaw", "Nuzzlewhisker", "Gnawsworth", "Sniffletooth", "Nibbleworth", "Scurrytail", "Mousington", "Wigglenose", "Scamperfoot", "Scratchington", "Cheesewood", "Squeakerton", "Pipsqueak", "Furrywhisker", "Nimbleclaw", "Munchkins", "Pawpad", "Skittertail", "Mouselington", "Fuzzymuzzle", "Cheesewhisk", "Snifflesnout", "Whiskerpaws", "Nibblesworth"]
+                            },
+                            {
+                                "name": "Chicken",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Sparrow",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Hawk",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Owl",
+                                "forenames":        null,
+                                "surnames":         null
+                            }
+                          ]                       
+                    },
+                    {
+                        "faction": "Neutral",
+                        "color": "DARKGREY",
+                        "races": 
+                        [   
+                            {
+                                "name": "Wolf",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Fox",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Rabbit",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Squirrel",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Raccoon",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Deer",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Bear",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Boar",
+                                "forenames":        null,
+                                "surnames":         null
+                            },    
+                            {
+                                "name": "Mouse",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Chicken",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Sparrow",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Hawk",
+                                "forenames":        null,
+                                "surnames":         null
+                            },
+                            {
+                                "name": "Owl",
+                                "forenames":        null,
+                                "surnames":         null
+                            }
+                        ]         
+                    }   
+                ]
+            }
+        ]
+    }
+]
