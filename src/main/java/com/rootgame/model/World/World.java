@@ -95,6 +95,7 @@ public class World {
                 generateWorldData();    
             } while ((!setNeighbours() || !generateFactions()) && retries++ < 1000);
             
+            setPaths();
             populateWorld();
             fillWorldList();
             notifyListeners(getWorldObjectList());
@@ -103,7 +104,7 @@ public class World {
             e.printStackTrace();
         }
 
-        
+
         origin = settlements.get((int) (Math.random() * settlements.size()));
         randomNpc = NPCFactory.createNPC(NPCType.CARAVAN,"Neutral", origin);
         System.out.println("World generated. " + retries + " retries.\n" );
@@ -123,7 +124,11 @@ public class World {
      * @return A boolean value is being returned.
      */
     private boolean setNeighbours() throws Exception {
-        return GenerateWorld.setNeighbours(settlements, paths);
+        return GenerateWorld.setNeighbours(settlements);
+    }
+
+    private void setPaths() throws Exception {
+        GenerateWorld.setPaths(settlements, paths);
     }
            
     /**

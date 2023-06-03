@@ -1,11 +1,10 @@
 package com.rootgame.model.World.WorldObjects;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import com.rootgame.model.NPC.NPC;
 
@@ -16,12 +15,12 @@ public abstract class WorldObject {
     protected int y;
     protected List<NPC> npcs;
     protected String faction;
-    private Map<WorldObject,WorldObject> neighbours;
+    protected Set<WorldObject> neighbours;
     protected int distance;
     protected int combatStrength;
     protected int marketValue;
     protected int loyalty;
-    protected List<WorldObject> fighList;
+    protected List<WorldObject> fightList;
     protected boolean besieged;
     protected int siegeTimer;
     protected boolean ruined;
@@ -50,9 +49,9 @@ public abstract class WorldObject {
         description = "null";
         this.type = type;
         
-        neighbours = new HashMap<>();
+        neighbours = new HashSet<>();
         npcs = new LinkedList<>();
-        fighList = new LinkedList<>();
+        fightList = new LinkedList<>();
     }
 
     /*
@@ -254,61 +253,47 @@ public abstract class WorldObject {
         return npcs;
     }
 
-    public boolean isNeighbour(WorldObject worldObject) {
-        return neighbours.containsKey(worldObject);
-    }
+  
 
     /*
      * Neighbour Methods
      */
 
-    public boolean isNeighbour(String name) {
-        return neighbours.keySet().stream().anyMatch(worldObject -> worldObject.getName().equals(name));
+     public boolean isNeighbour(WorldObject worldObject) {
+        return neighbours.contains(worldObject);
     }
 
     public List<WorldObject> getNeighbours() {
-        return neighbours.keySet().stream().collect(Collectors.toList());
+        return new LinkedList<>(neighbours);
     }
 
     public boolean addNeighbour(WorldObject neighbour) {
 
-        if (neighbours.size() < 4 && neighbour.getNeighbours().size() < 4 && !neighbours.containsKey(neighbour) ) {
-            neighbours.put(neighbour,null);
-            neighbour.addNeighbour(this);
-            return true;
+        if (neighbours.size() == 4) {
+            return false;
         }
-        if (neighbour.getNeighbours().size() == 4 && neighbour.getNeighbours().contains(this)){
-            neighbours.put(neighbour,null);
-            return true;
+        if (neighbour.getNeighbours().size() == 4 && !neighbour.getNeighbours().contains(this)){
+            return false;
         }
-        return false;
+
+        if (!neighbours.add(neighbour)) {
+            return false;
+        }
+        
+        return true;
     }
 
     public boolean removeNeighbour(WorldObject neighbour) {
-        if (neighbours.containsKey(neighbour)) {
-            neighbours.remove(neighbour);
-            neighbour.removeNeighbour(this);
-            return true;
-        }
-        return false;
+        return neighbours.remove(neighbour);
     }
-
-    public WorldObject getPathTo(WorldObject neighbour) {
-        return neighbours.get(neighbour);
-    }
-
-    public void setPath(WorldObject neighbour, WorldObject path) {
-        neighbours.put(neighbour, path);
-    }
-
-    public List <WorldObject> getPaths() {
-        return neighbours.values().stream().collect(Collectors.toList());
-    }
-
 
     /*
      * utilitiy Methods
      */
+
+    public boolean hasType(WorldObjectType type) {
+        return this.type.equals(type);
+    }
 
     @Override
     public int hashCode() {
@@ -356,6 +341,11 @@ public abstract class WorldObject {
     public String toString() {
         String neighboursString = getNeighbours().stream().map(WorldObject::getName).reduce("", (a, b) -> a + ", " + b);
         return name;
+    }
+
+    public enum Type{
+        SETTLEMENT,
+        PATH;
     }
        
 }

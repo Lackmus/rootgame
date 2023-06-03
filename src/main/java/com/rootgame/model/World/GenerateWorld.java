@@ -27,7 +27,7 @@ public class GenerateWorld {
     /************************
      * World Generation API *
      ************************/
-
+        
     /*****************************
      * fill World with Clearings *
      ****************************/
@@ -90,17 +90,18 @@ public class GenerateWorld {
      *************************************************************************************************************************************************************/
 
     /**
-     * This function sets the neighbours of clearings by connecting them through paths.
+     * This function sets the neighbours of a list of WorldObjects and returns a boolean indicating
+     * whether the neighbours were successfully set.
      * 
-     * @param clearings A list of Clearing objects representing the different locations on a game
-     * board.
-     * @param paths A list of Path objects representing the connections between Clearing objects.
+     * @param settlements A list of WorldObject instances representing settlements in a game world.
+     * @return The method is returning a boolean value, which indicates whether the neighbours of the
+     * given list of WorldObjects have been successfully set or not.
      */
-    public static boolean setNeighbours(List<WorldObject> settlements, List<WorldObject> paths) {
+    public static boolean setNeighbours(List<WorldObject> settlements) {
         boolean neighboursSet = false;
         System.out.println("Setting neighbours");
-        setInitialNeighbours(settlements, paths);
-        connectRemainingClearings(settlements, paths);
+        setInitialNeighbours(settlements);
+        connectRemainingSettlements(settlements);
         neighboursSet = checkNeighbours(settlements);
         
         System.out.println(neighboursSet? "Neighbours set" : "Neighbours not set, trying again");            
@@ -108,14 +109,22 @@ public class GenerateWorld {
         return neighboursSet;
     }
 
-    // method to check if there is at least one clearing with 4 neighbours and 2 with 3 neighbours
-    private static boolean checkNeighbours(List<WorldObject> clearings) {
+    /**
+     * The function checks if a list of WorldObjects has at least 6 objects with 3 neighbors and 1
+     * object with 4 neighbors.
+     * 
+     * @param settlements A list of WorldObject instances representing settlements.
+     * @return The method is returning a boolean value. It returns true if there are at least 6
+     * settlements with 3 neighbours and at least 1 settlement with 4 neighbours in the given list of
+     * settlements, and false otherwise.
+     */
+    private static boolean checkNeighbours(List<WorldObject> settlements) {
         int count3 = 0;
         int count4 = 0;
-        for (WorldObject clearing : clearings) {
-            if (clearing.getNeighbours().size() == 3) {
+        for (WorldObject settlement : settlements) {
+            if (settlement.getNeighbours().size() == 3) {
                 count3++;
-            } else if (clearing.getNeighbours().size() == 4) {
+            } else if (settlement.getNeighbours().size() == 4) {
                 count4++;
             }
         }
@@ -123,25 +132,20 @@ public class GenerateWorld {
     }
     
     /**
-     * This function sets initial neighbours for each clearing in a list by searching for nearby
-     * clearings and adding them as neighbours if certain conditions are met.
+     * This function sets initial neighbours for a list of world objects by iterating through each
+     * object and adding neighbours until each object has at least two neighbours within a certain
+     * search range.
      * 
-     * @param clearings A list of Clearing objects representing the different locations on a game
-     * board.
-     * @param paths A list of Path objects representing the connections between Clearing objects.
+     * @param settlements A list of WorldObject instances representing settlements in a world.
      */
-    private static void setInitialNeighbours(List<WorldObject> settlements, List<WorldObject> paths) {
+    private static void setInitialNeighbours(List<WorldObject> settlements) {
         for (WorldObject settlement : settlements) {
             int searchRange = 100;
             while (settlement.getNeighbours().size() < 2) {
-                for (WorldObject neighbor : settlements) {
-                    if (shouldAddNeighbour(settlement, neighbor, searchRange, settlements, paths)) {
-                        if (settlement.addNeighbour(neighbor)) {
-                            WorldObject path = makePath(settlement, neighbor);
-                            settlement.setPath(neighbor, path);
-                            neighbor.setPath(settlement, path);
-                            paths.add(path);
-                        } 
+                for (WorldObject neighbour : settlements) {
+                    if (shouldAddNeighbour(settlement, neighbour, searchRange, settlements)) {
+                        settlement.addNeighbour(neighbour); 
+                        neighbour.addNeighbour(settlement);
                     }
                 }
                 searchRange += 10;
@@ -150,69 +154,55 @@ public class GenerateWorld {
     }
     
     /**
-     * This function determines whether a neighboring clearing should be added based on its distance,
-     * location, and the presence of other clearings and paths within a certain range.
+     * This function determines whether a neighboring world object should be added to a list of
+     * settlements based on its distance and search range.
      * 
-     * @param clearing A Clearing object representing the current clearing being evaluated.
-     * @param neighbor The neighboring Clearing being checked for whether it should be added as a
-     * neighbor to the current Clearing.
-     * @param searchRange The maximum distance between the two clearings for the method to consider
-     * adding the neighbor as a valid option.
-     * @param clearings A list of Clearing objects representing all the clearings on a game board.
-     * @param paths A list of Path objects representing the paths on the game board.
-     * @return A boolean value is being returned.
+     * @param settlement A WorldObject representing a settlement.
+     * @param neighbor The neighboring WorldObject being checked for potential addition to a list of
+     * settlements.
+     * @param searchRange The maximum distance between the settlement and its neighbor for the neighbor
+     * to be considered as a valid candidate for adding as a neighbor to the settlement.
+     * @param settlements A list of WorldObject representing all the settlements in the world.
+     * @return A boolean value indicating whether a neighbor should be added to a list of neighboring
+     * settlements based on its distance from a given settlement and a search range.
      */
-    private static boolean shouldAddNeighbour(WorldObject settlement, WorldObject neighbor, int searchRange, List<WorldObject> settlements, List<WorldObject> paths) {
+    private static boolean shouldAddNeighbour(WorldObject settlement, WorldObject neighbor, int searchRange, List<WorldObject> settlements) {
         int distance = settlement.getDistance(neighbor);
-        int pathX = (settlement.getX() + neighbor.getX()) / 2;
-        int pathY = (settlement.getY() + neighbor.getY()) / 2;
-    
         return  !settlement.equals(neighbor) 
-                && distance <= searchRange
-                && noObjectInDistance(settlements, pathX, pathY, 20)
-                && noObjectInDistance(paths, pathX, pathY, 20);
+                && distance <= searchRange;         
     }
     
     /**
-     * This function connects all the clearings in a list by finding the minimum distance between them
-     * and creating paths.
+     * This function connects all the settlements in a list by finding the minimum clearing distance
+     * between them.
      * 
-     * @param clearings A list of Clearing objects representing the different clearings on a game
-     * board.
-     * @param paths A list of Path objects representing the connections between Clearing objects.
+     * @param settlements A list of WorldObject representing settlements that need to be connected.
      */
-    private static void connectRemainingClearings(List<WorldObject> clearings, List<WorldObject> paths) {
+    private static void connectRemainingSettlements(List<WorldObject> settlements) {
         List<WorldObject> notConnectedList;
-        while (!(notConnectedList = getNotConnectedList(clearings)).isEmpty()) {
-            connectMinClearingDistance(clearings, paths, notConnectedList);
+        while (!(notConnectedList = getNotConnectedList(settlements)).isEmpty()) {
+            connectMinClearingDistance(settlements, notConnectedList);
         }
     }
     
     /**
-     * This function connects the two closest clearings from a list of not connected clearings to a
-     * list of connected clearings.
+     * The function connects two WorldObject settlements with the shortest distance between them.
      * 
-     * @param clearings A list of all the clearings in the game.
-     * @param paths A list of Path objects representing the connections between Clearing objects.
-     * @param notConnectedList A list of Clearing objects that are not currently connected to any other
-     * Clearing objects.
-     * 
-     * @throws IllegalArgumentException if the two closest clearings cannot be found.
+     * @param settlements A list of WorldObject instances representing settlements that are already
+     * connected to each other.
+     * @param notConnectedList A list of WorldObjects that are not yet connected to any other
+     * WorldObject.
      */
-    private static void connectMinClearingDistance(List<WorldObject> settlements, List<WorldObject> paths, List<WorldObject> notConnectedList) {
+    private static void connectMinClearingDistance(List<WorldObject> settlements, List<WorldObject> notConnectedList) {
         List<WorldObject> connectedList = getConnectedList(settlements, notConnectedList);
     
-        WorldObject[] shortestPath = findShortestPath(notConnectedList, connectedList);
+        WorldObject[] shortestPath = findShortestDistance(notConnectedList, connectedList);
     
         WorldObject settlementA = shortestPath[0];
         WorldObject settlementB = shortestPath[1];
     
-        if (settlementA.addNeighbour(settlementB)) {
-            WorldObject path = makePath(settlementA, settlementB);
-            settlementA.setPath(settlementB, path);
-            settlementB.setPath(settlementA, path);
-            paths.add(path);
-        }
+        settlementA.addNeighbour(settlementB);  
+        settlementB.addNeighbour(settlementA);   
     }
     
     /**
@@ -263,6 +253,63 @@ public class GenerateWorld {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * This function finds the shortest distance between two lists of WorldObjects.
+     * 
+     * @param notConnectedList A list of WorldObjects that are not yet connected to any other
+     * WorldObject.
+     * @param connectedList The "connectedList" parameter is a list of WorldObjects that are already
+     * connected to each other. The method is trying to find the shortest distance between these
+     * connected objects and the objects in the "notConnectedList" parameter.
+     * @return The method is returning an array of two WorldObject instances that have the shortest
+     * distance between them. The first element of the array is a WorldObject from the notConnectedList
+     * and the second element is a WorldObject from the connectedList.
+     */
+    private static WorldObject[] findShortestDistance(List<WorldObject> notConnectedList, List<WorldObject> connectedList) {
+        return notConnectedList.stream()
+                .flatMap(c -> connectedList.stream().map(d -> new WorldObject[]{c, d}))
+                .min(Comparator.comparingInt(a -> a[0].getDistance(a[1])))
+                .orElseThrow();
+    }
+
+     /************
+     * add Paths *
+     *************************************************************************************************************************************************************/
+    
+     /**
+      * The function adds paths between settlements and their neighbours to a list of paths.
+      * 
+      * @param settlements A list of WorldObject instances representing settlements.
+      * @param paths A list of WorldObject representing the paths between settlements.
+      */
+     public static void setPaths(List<WorldObject> settlements, List<WorldObject> paths) {
+        for (WorldObject settlement : settlements) {
+            for (WorldObject neighbour : settlement.getNeighbours()) {
+                if (!paths.contains(neighbour)) {
+                    WorldObject path = makePath(settlement, neighbour);
+
+                    settlement.removeNeighbour(neighbour);
+                    settlement.addNeighbour(path);
+
+                    neighbour.removeNeighbour(settlement);
+                    neighbour.addNeighbour(path);
+
+                    paths.add(path);
+                }
+            }
+        }
+        setPathFactions(paths);
+    }
+
+    /**
+     * The function creates a path object between two settlements by calculating the midpoint
+     * coordinates and using a WorldObjectFactory.
+     * 
+     * @param settlementA A WorldObject representing one of the settlements connected by the path.
+     * @param settlementB The second settlement object that the path is being created between.
+     * @return The method is returning a WorldObject, which is a path object created using the
+     * coordinates of two settlements and a name that indicates the connection between them.
+     */
     private static WorldObject makePath(WorldObject settlementA, WorldObject settlementB) {
         int pathX = (settlementA.getX() + settlementB.getX()) / 2;
         int pathY = (settlementA.getY() + settlementB.getY()) / 2;
@@ -270,31 +317,14 @@ public class GenerateWorld {
         WorldObject path = WorldObjectFactory.createWorldObject(WorldObjectType.PATH, "Path: " + settlementA.getName() + " - " + settlementB.getName(), pathX, pathY);
         path.addNeighbour(settlementA);
         path.addNeighbour(settlementB);
-        
         return path;
-    }
-    
-    /**
-     * This function finds the shortest path between two lists of Clearing objects.
-     * 
-     * @param notConnectedList A list of Clearing objects that are not currently connected to any other
-     * Clearing objects.
-     * @param connectedList The connectedList parameter is a List of Clearing objects that are already
-     * connected to each other.
-     * @return The method is returning an array of Clearing objects that represent the shortest path
-     * between two lists of Clearing objects.
-     */
-    private static WorldObject[] findShortestPath(List<WorldObject> notConnectedList, List<WorldObject> connectedList) {
-        return notConnectedList.stream()
-                .flatMap(c -> connectedList.stream().map(d -> new WorldObject[]{c, d}))
-                .min(Comparator.comparingInt(a -> a[0].getDistance(a[1])))
-                .orElseThrow();
     }
     
     /**************************
      * fill Objects with NPCs *
      *************************************************************************************************************************************************************/
-    /**
+    
+     /**
      * The function populates each clearing in a world with a faction and its inhabitants.
      */
     public static void populateWorld(List<WorldObject> settlements, List<WorldObject> paths) {
@@ -364,7 +394,6 @@ public class GenerateWorld {
             System.out.println("Factions could not be set.");
             return false;
         }
-        setPathFactions(paths);
         return checkFactions(settlements);
     }
 

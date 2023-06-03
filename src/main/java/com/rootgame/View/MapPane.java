@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.rootgame.model.NPC.FactionRaces;
 import com.rootgame.model.NPC.NPC;
 import com.rootgame.model.World.WorldObjects.WorldObject;
+import com.rootgame.model.World.WorldObjects.WorldObjectType;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -35,21 +36,22 @@ public class MapPane {
      * the map.
      */
     public static void drawMap(Pane mapPane, List<WorldObject> worldObjectList) {
+        System.out.println("Drawing map");
         for (WorldObject worldObject : worldObjectList) {
-            if (worldObject.getName().contains("Path")) {
+            if (worldObject.hasType(WorldObjectType.PATH)) {
                 drawPath(mapPane, worldObject);
             } 
         }
         for (WorldObject worldObject : worldObjectList) {
-            if (!worldObject.getName().contains("Path")) {
+            if (worldObject.hasType(WorldObjectType.SETTLEMENT)) {
                 drawClearing(mapPane, worldObject);
             } 
         }
     }
 
     private static void drawPath(Pane mapPane, WorldObject worldObject) {
-        int[] start = { worldObject.getNeighbours().get(0).getX(), worldObject.getNeighbours().get(0).getY() };
-        int[] end = { worldObject.getNeighbours().get(1).getX(), worldObject.getNeighbours().get(1).getY() };
+        int[] start = {worldObject.getNeighbours().get(0).getX(), worldObject.getNeighbours().get(0).getY() };
+        int[] end = {worldObject.getNeighbours().get(1).getX(), worldObject.getNeighbours().get(1).getY() };
         
         int x = worldObject.getX();
         int y = worldObject.getY();

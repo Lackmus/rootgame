@@ -43,7 +43,7 @@ public class LoadWorld {
                 String name = objectJson.getString("name");
                 int x = objectJson.getInt("x");
                 int y = objectJson.getInt("y");
-                WorldObjectType type = WorldObjectType.valueOf(objectJson.getString("type"));
+                WorldObject.Type type = WorldObject.Type.valueOf(objectJson.getString("type"));
 
                 WorldObject worldObject;
                 switch (type) {
@@ -172,8 +172,8 @@ public class LoadWorld {
             WorldObject settlement = path.getNeighbours().get(0);
             WorldObject neighbour = path.getNeighbours().get(1);
             settlement.addNeighbour(neighbour);
-            settlement.setPath(neighbour, path);
-            neighbour.setPath(settlement, path);
+            //settlement.setPath(neighbour, path);
+            //neighbour.setPath(settlement, path);
         }
     }
 

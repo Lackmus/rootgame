@@ -1,10 +1,12 @@
 package com.rootgame.model.World;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
@@ -61,12 +63,12 @@ public class EvolveWorld {
       return paths.get(destination);
   }    
     
-/*
-   public static Queue<WorldObject> makeDestinationPath(NPC npc, WorldObject destination) {
-    WorldObject currentLocation = npc.getCurrentLocation();
-    Map<WorldObject, Integer> distance = new HashMap<>();
-    Map<WorldObject, WorldObject> previous = new HashMap<>();
-    PriorityQueue<WorldObject> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get));
+
+public static Queue<WorldObject> makeDestinationPath2(NPC npc, WorldObject destination) {
+    WorldObject currentLocation = npc.getCurrentLocation(); // Start node
+    Map<WorldObject, Integer> distance = new HashMap<>(); // Distance from start node to given node
+    Map<WorldObject, WorldObject> previous = new HashMap<>(); // Previous node in optimal path from source
+    PriorityQueue<WorldObject> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get)); // Priority queue of all nodes in Graph
 
     distance.put(currentLocation, 0);
     queue.add(currentLocation);
@@ -98,6 +100,7 @@ public class EvolveWorld {
 private static int getEdgeWeight(WorldObject source, WorldObject destination) {
     // Return the weight/cost of the edge between source and destination
     // Implement your logic here based on your specific requirements
+    return 0;
 }
 
 private static Queue<WorldObject> buildPath(WorldObject destination, Map<WorldObject, WorldObject> previous) {
@@ -111,29 +114,29 @@ private static Queue<WorldObject> buildPath(WorldObject destination, Map<WorldOb
 
     return path;
 }
-      }*/
+      
 
-    private  static void evolveWorldObjects() {}
+//    private  static void evolveWorldObjects() {}
 
-    private static void evolveNPCs() {}
+//    private static void evolveNPCs() {}
 
-    private static void evolveFactions() {}
+//    private static void evolveFactions() {}
 
-    private static void evolveClearings() {}
+//   private static void evolveClearings() {}
 
-    private static void evolvePaths() {}
+//    private static void evolvePaths() {}
 
-    private static void evolveWorldObject(WorldObject worldObject) {}
+//    private static void evolveWorldObject(WorldObject worldObject) {}
 
-    private static void evolveNPC(NPC npc) {}
+//    private static void evolveNPC(NPC npc) {}
 
-    private static void makeDestinationPath(WorldObject worldObject) {}
+//    private static void makeDestinationPath(WorldObject worldObject) {}
 
-    private static void evolveFaction(String faction) {}
+//    private static void evolveFaction(String faction) {}
 
-    private static void evolveClearing(Settlement clearing) {}
+//    private static void evolveClearing(Settlement clearing) {}
 
-    private static void evolvePath(Path path) {}
+//    private static void evolvePath(Path path) {}
 
     
 }

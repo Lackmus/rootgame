@@ -32,7 +32,6 @@ public class App extends Application implements ListUpdateListener{
         world = new World(500, 500);
         world.addListUpdateListener(this);
         world.generateWorld();
-        MapPane.drawMap(mapPane,world.getWorldObjectList());
 
         BorderPane root = new BorderPane(); 
         ToolBar toolBar = createToolBar();
