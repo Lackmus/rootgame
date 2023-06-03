@@ -182,8 +182,7 @@ public class LoadWorld {
         allObjects.addAll(settlements);
         allObjects.addAll(paths);
         for (WorldObject worldObject : allObjects) {
-            List<NPC> npcs = worldObject.getNPCs();
-            for (NPC npc : npcs) {
+            for (NPC npc : worldObject.getNPCs()) {
                 List<String> destinationPath = destinationPathMap.get(npc.getName());
                 if (destinationPath != null) {
                     for (String destinationName : destinationPath) {

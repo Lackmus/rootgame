@@ -3,7 +3,6 @@ package com.rootgame.model.World.WorldObjects;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 import com.rootgame.model.NPC.NPC;
@@ -29,7 +28,7 @@ public abstract class WorldObject {
     protected int currentPopulation;
     protected String description;
     protected WorldObjectType type;
-    protected Queue<WorldObject> path; // 
+    protected List<String> neighbourStrings; 
 
     public WorldObject(WorldObjectType type, String name, int x, int y) {
         this.name = name;
@@ -52,6 +51,7 @@ public abstract class WorldObject {
         neighbours = new HashSet<>();
         npcs = new LinkedList<>();
         fightList = new LinkedList<>();
+        neighbourStrings = new LinkedList<>();
     }
 
     /*
@@ -280,11 +280,16 @@ public abstract class WorldObject {
             return false;
         }
         
+        if(!neighbour.hasType(WorldObjectType.PATH))
+            neighbourStrings.add(neighbour.getName());
         return true;
     }
 
     public boolean removeNeighbour(WorldObject neighbour) {
-        return neighbours.remove(neighbour);
+        if (neighbours.remove(neighbour)) {
+            return true;
+        }
+        return false;
     }
 
     /*
@@ -337,9 +342,16 @@ public abstract class WorldObject {
         neighbours.clear();
     }
 
+    public List<String> getNeighbourStrings() {
+        return neighbourStrings;
+    }
+
+    public String neighboursToString() {
+       return neighbourStrings.toString();
+    }
+
     @Override
     public String toString() {
-        String neighboursString = getNeighbours().stream().map(WorldObject::getName).reduce("", (a, b) -> a + ", " + b);
         return name;
     }
 

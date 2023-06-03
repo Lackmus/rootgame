@@ -184,9 +184,7 @@ public class MapPane {
         });
 
         Text neighbourText = new Text(
-            worldObject.getNeighbours().stream()
-            .map(WorldObject::getName)
-            .collect(Collectors.joining(", "))
+            worldObject.neighboursToString()
         );
 
         VBox vBox = new VBox();

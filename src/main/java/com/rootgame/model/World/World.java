@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rootgame.model.NPC.FactionRaces;
-import com.rootgame.model.NPC.NPC;
-import com.rootgame.model.NPC.NPCFactory;
-import com.rootgame.model.NPC.NPCType;
 import com.rootgame.model.World.MyObservable.ListUpdateEvent;
 import com.rootgame.model.World.MyObservable.ListUpdateListener;
 import com.rootgame.model.World.WorldObjects.WorldObject;
@@ -25,9 +22,6 @@ public class World {
     
     private List<String> clearingNames; // List of clearing names
     private List<String> factions;     // List of factions
-
-    private WorldObject origin;         // Origin of the world
-    private NPC randomNpc;            // Random NPC
     
     public World (int mapX, int mapY) {
         clearingNames = FactionRaces.getCityNames();
@@ -104,9 +98,6 @@ public class World {
             e.printStackTrace();
         }
 
-
-        origin = settlements.get((int) (Math.random() * settlements.size()));
-        randomNpc = NPCFactory.createNPC(NPCType.CARAVAN,"Neutral", origin);
         System.out.println("World generated. " + retries + " retries.\n" );
     }
     
@@ -153,7 +144,7 @@ public class World {
     public void evolveWorld() {
         System.out.println("Evolving world...");
         
-        EvolveWorld.evolveWorld(settlements,randomNpc);
+        EvolveWorld.evolveWorld(worldObjectList);
         notifyListeners(worldObjectList); 
     }
 

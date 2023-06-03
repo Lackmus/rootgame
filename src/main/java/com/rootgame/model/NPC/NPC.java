@@ -135,9 +135,14 @@ public class NPC {
 
     public void moveNPC(){
         if (destinationPath.size() > 0){
+            System.out.println("Moving....");
+            System.out.println("origin = currentLocation");
             origin = currentLocation;
+            System.out.println("currentLocation = destinationPath.poll()");
             currentLocation = destinationPath.poll();
+            System.out.println("currentLocation.addNPC(this)");
             currentLocation.addNPC(this);
+            System.out.println("origin.removeNPC(this)");
             origin.removeNPC(this);
 
             System.out.println("NPC " + name + " moved from " + getOrigin().getName() + " to " + currentLocation.getName());
@@ -175,14 +180,13 @@ public class NPC {
             && this.origin.equals(((NPC) obj).getOrigin());
     }
     
-
     @Override
     public String toString() {
         String loyaltyString = this.loyalty == -1 ? "" : this.loyalty < 25 ? "disloyal" : this.loyalty < 50 ? "unreliable" : this.loyalty < 75 ? "loyal" : "devoted";        
         return npcType + ", " + faction + ", Loyalty: " + loyaltyString +  
             "\nName: " + name + ", Species: " + race +  
-            "\nOrigin: " + origin.getName() +
-            "\nDestination: " + (destinationPath.isEmpty() ? "None" : destinationPath.peek());    
+            (!destinationPath.isEmpty() ? "\nDestination: " + destinationPath.peek() : "") + 
+            (!origin.equals(currentLocation) ? "\nOrigin: " + origin.getName() : "");    
     }
 
     

@@ -71,7 +71,7 @@ public class App extends Application implements ListUpdateListener{
         Button evolveButton = new Button("Evolve");
         evolveButton.setOnAction(event -> {
             world.evolveWorld();
-            showInfoAlert("World evolved", "The world has been evolved.");
+            //showInfoAlert("World evolved", "The world has been evolved.");
         });
         buttonShadow(evolveButton);
 

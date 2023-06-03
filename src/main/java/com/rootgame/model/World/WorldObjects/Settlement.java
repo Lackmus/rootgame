@@ -76,4 +76,5 @@ public class Settlement extends WorldObject {
             updateCombatStrength();
         }
     }
+    
 }

@@ -28,6 +28,7 @@ public class Path extends WorldObject {
             setDistance(getNeighbours().get(0), getNeighbours().get(1));
         }
 
+        neighbourStrings.add(worldObject.getName());
         return true;
     }
 
@@ -37,7 +38,11 @@ public class Path extends WorldObject {
             System.out.println("Cannot remove null neighbour");
             return false;
         }      
-        return getNeighbours().remove(worldObject);
+        if(!neighbours.remove(worldObject))
+            return false;
+
+        neighbourStrings.remove(worldObject.getName());
+        return true;
     }
 
     @Override
@@ -54,4 +59,5 @@ public class Path extends WorldObject {
     public void growPopulation() {
         
     }
+
 }
