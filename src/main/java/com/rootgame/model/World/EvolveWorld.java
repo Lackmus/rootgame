@@ -1,5 +1,6 @@
 package com.rootgame.model.World;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,10 +29,22 @@ public class EvolveWorld {
  *************************************************************************************************************************************************************/
 
     private static void evolveNPCs(List<WorldObject> worldObjectList) {
-        for (WorldObject worldObject : worldObjectList) {
-            List<NPC> npcListCopy = new LinkedList<>(worldObject.getNPCs());
-            for (NPC npc : npcListCopy) {
-                evolveNPC(npc, worldObjectList);
+        List<WorldObject> synchronizedList = Collections.synchronizedList(worldObjectList);
+
+        synchronized (synchronizedList) {
+            for (WorldObject worldObject : synchronizedList) {
+                synchronized (worldObject) {
+                    for (NPC npc : worldObject.getNPCs()) {
+                        evolveNPC(npc, synchronizedList);
+                    }
+                }
+            }            
+            for (WorldObject worldObject : synchronizedList) {
+                synchronized (worldObject) {
+                    for (NPC npc : worldObject.getNPCs()) {
+                        npc.setMoved(false);
+                    }
+                }
             }
         }
     }
@@ -51,15 +64,19 @@ public class EvolveWorld {
                 evolveTrader(npc);
                 break;
             case BANDIT:
-                evolveRogue(npc);
+                evolveBandit(npc);
+                break;
+            case MERCENARY:
+                evolveMercenary(npc);
                 break;
             default:
                 break;
         }
+        npc.setMoved(true);
     }
 
     
-    private static void evolveRogue(NPC npc) {
+    private static void evolveBandit(NPC npc) {
         // TODO Auto-generated method stub
     }
 
@@ -72,6 +89,10 @@ public class EvolveWorld {
     }
 
     private static void evolveLeader(NPC npc) {
+        // TODO Auto-generated method stub
+    }
+
+    private static void evolveMercenary(NPC npc) {
         // TODO Auto-generated method stub
     }
 

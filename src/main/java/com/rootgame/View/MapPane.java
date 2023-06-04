@@ -1,7 +1,6 @@
 package com.rootgame.View;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.rootgame.model.NPC.FactionRaces;
 import com.rootgame.model.NPC.NPC;
@@ -192,7 +191,7 @@ public class MapPane {
         vBox.getChildren().addAll(
             new Text("Name:    " + worldObject.getName()),
             new Text("Faction: " + worldObject.getFaction()),
-            new Text(""),
+            new Text(worldObject.getNPCs().toString()),
             new Text("Neighbours:"),
             neighbourText,
             new Label(""),
@@ -204,7 +203,7 @@ public class MapPane {
         root.setTop(new ToolBar());
         root.setCenter(vBox);
 
-        Scene scene = new Scene(root, 350, 300);
+        Scene scene = new Scene(root, 500, 500);//350, 300
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);

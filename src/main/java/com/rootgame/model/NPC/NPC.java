@@ -19,6 +19,7 @@ public class NPC {
     private WorldObject origin;
     private WorldObject destination;
     private Queue<WorldObject> destinationPath;
+    private boolean moved;
 
     public NPC(String name, String race, NPCType npcType, String faction, WorldObject origin) {
         this.name = name;
@@ -33,6 +34,7 @@ public class NPC {
         combatStrength = 0;
         marketValue = 0;
         loyalty = 0;
+        moved = false;
     }
 
     public String getName() {
@@ -57,6 +59,14 @@ public class NPC {
 
     public String getFaction() {
         return faction;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+
+    public boolean hasMoved() {
+        return moved;
     }
 
     /** 
@@ -134,22 +144,12 @@ public class NPC {
     };
 
     public void moveNPC(){
-        if (destinationPath.size() > 0){
-            System.out.println("Moving....");
-            System.out.println("origin = currentLocation");
+        if (destinationPath.size() > 0 && !hasMoved()){
             origin = currentLocation;
-            System.out.println("currentLocation = destinationPath.poll()");
             currentLocation = destinationPath.poll();
-            System.out.println("currentLocation.addNPC(this)");
             currentLocation.addNPC(this);
-            System.out.println("origin.removeNPC(this)");
             origin.removeNPC(this);
-
-            System.out.println("NPC " + name + " moved from " + getOrigin().getName() + " to " + currentLocation.getName());
-            System.out.println("NPC " + name + " has " + destinationPath.size() + " destinations left.");
-            System.out.println("NPC " + name + " is now at " + currentLocation.getName());
-            System.out.println(destinationPath);
-            
+            System.out.println("NPC: " + name + " moved from " + getOrigin().getName() + " to " + currentLocation.getName());
         }
     }
 
@@ -186,7 +186,7 @@ public class NPC {
         return npcType + ", " + faction + ", Loyalty: " + loyaltyString +  
             "\nName: " + name + ", Species: " + race +  
             (!destinationPath.isEmpty() ? "\nDestination: " + destinationPath.peek() : "") + 
-            (!origin.equals(currentLocation) ? "\nOrigin: " + origin.getName() : "");    
+            (!origin.equals(currentLocation) ? "\nOrigin: " + origin.getName() : "") + "\n";    
     }
 
     

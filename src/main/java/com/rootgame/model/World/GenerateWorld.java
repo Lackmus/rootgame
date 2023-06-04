@@ -332,7 +332,7 @@ public class GenerateWorld {
             populateSettlement(settlement);
         }
         for (WorldObject path : paths) {
-            populatePathWithRougue(path);
+            populatePathWithBandit(path);
         }
     }
     
@@ -346,10 +346,9 @@ public class GenerateWorld {
     private static void populateSettlement(WorldObject settlement) {
        
         NPCType type = NPCType.LEADER;
-        addCreatedNPC(type, settlement.getFaction(), settlement);  
-            
+        settlement.addNPC(NPCFactory.createNPC(type, settlement.getFaction(), settlement));            
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 10; i++) {
             switch(i){
                 case 0: case 1: case 2: case 3:
                     type = NPCType.SOLDIER;
@@ -361,22 +360,20 @@ public class GenerateWorld {
                     type = NPCType.TRADER;
                     break;
                 default:
-                    if (Math.random() < 0.5) {
-                        type = Math.random() < 0.5? NPCType.CARAVAN : NPCType.MERCENARY;
-                    }
                     break;
             }
-            addCreatedNPC(type, settlement.getFaction(), settlement);
+            settlement.addNPC(NPCFactory.createNPC(type, settlement.getFaction(), settlement));            
+
         }
+        if (Math.random() < 0.5) {
+            type = Math.random() < 0.5? NPCType.CARAVAN : NPCType.MERCENARY;
+        }
+        settlement.addNPC(NPCFactory.createNPC(type, settlement.getFaction(), settlement));
     }
 
-    private static void addCreatedNPC(NPCType type, String faction, WorldObject location) {
-        location.addNPC (NPCFactory.createNPC(type, faction, location));
-    }
-
-    private static void populatePathWithRougue(WorldObject path) {
+    private static void populatePathWithBandit(WorldObject path) {
         if (path.getFaction() == "Neutral" && Math.random() < 0.5) {
-           addCreatedNPC(NPCType.BANDIT, path.getFaction(), path);
+            path.addNPC(NPCFactory.createNPC(NPCType.BANDIT, path.getFaction(), path));
         }      
     }
 
