@@ -13,9 +13,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import com.rootgame.controller.World;
+import com.rootgame.controller.MyObservable.ListUpdateEvent;
+import com.rootgame.controller.MyObservable.ListUpdateListener;
 import com.rootgame.model.LoadedModule;
-import com.rootgame.model.World.MyObservable.ListUpdateEvent;
-import com.rootgame.model.World.MyObservable.ListUpdateListener;
 
 public class App extends Application implements ListUpdateListener{
     private Pane mapPane;

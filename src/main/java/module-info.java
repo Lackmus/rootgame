@@ -13,7 +13,7 @@ module com.rootgame {
     exports com.rootgame;
     exports com.rootgame.controller;
     exports com.rootgame.model;
-    exports com.rootgame.model.World.MyObservable;    
+    exports com.rootgame.controller.MyObservable;    
     exports com.rootgame.model.World;
     exports com.rootgame.model.World.WorldObjects;
     exports com.rootgame.model.NPC;

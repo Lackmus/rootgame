@@ -1,4 +1,4 @@
-package com.rootgame.model.World.MyObservable;
+package com.rootgame.controller.MyObservable;
 
 import java.util.EventListener;
 
