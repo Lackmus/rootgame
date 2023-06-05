@@ -149,9 +149,16 @@ public class World {
 
     public void evolveWorld() {
         System.out.println("Evolving world...");
-        
-        EvolveWorld.evolveWorld(worldObjectList);
-        notifyListeners(worldObjectList); 
+        for (int i = 0; i < 100; i++)    {  
+            try{  
+                EvolveWorld.evolveWorld(worldObjectList);
+                notifyListeners(worldObjectList); 
+            } catch (Exception e) {  
+                e.printStackTrace();
+                break;
+            }
+
+        }
     }
 
     /**

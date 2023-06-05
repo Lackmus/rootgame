@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rootgame.model.LoadedModule;
 import com.rootgame.model.NPC.NPC;
+import com.rootgame.model.NPC.NPCType;
 import com.rootgame.model.World.WorldObjects.WorldObject;
 import com.rootgame.model.World.WorldObjects.WorldObjectType;
 
@@ -55,6 +56,10 @@ public class MapPane {
         int y = worldObject.getY();
         Color color = LoadedModule.getFactionColor(worldObject.getFaction());
 
+        if ( worldObject.getNPCs().stream().anyMatch(npc -> npc.getType().equals(NPCType.CARAVAN))) {
+            color = Color.BLACK;
+        }
+
         Line line = new Line(start[0], start[1], end[0], end[1]);
         line.setStroke(color);
         line.setStrokeWidth(1);
@@ -74,6 +79,9 @@ public class MapPane {
         int x = worldObject.getX();
         int y = worldObject.getY();
         Color color = LoadedModule.getFactionColor(worldObject.getFaction());
+        if ( worldObject.getNPCs().stream().anyMatch(npc -> npc.getType().equals(NPCType.CARAVAN))) {
+            color = Color.BLACK;
+        }
 
         Circle circle = drawCircle(mapPane, x, y, color,10);
         circle.setOnMouseClicked(event -> showClearingInfo(worldObject));
