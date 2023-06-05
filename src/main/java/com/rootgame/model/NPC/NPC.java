@@ -143,6 +143,9 @@ public class NPC {
         this.destination = destination;
     };
 
+    /**
+     * This function moves an NPC to a new location along a predetermined path.
+     */
     public void moveNPC(){
         if (destinationPath.size() > 0 && !hasMoved()){
             origin = currentLocation;
@@ -165,7 +168,6 @@ public class NPC {
         return destinationPath;
     }
 
-    //give me equals and hashcode methods for NPC
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;

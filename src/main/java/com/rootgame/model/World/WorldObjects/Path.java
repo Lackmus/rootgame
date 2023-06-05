@@ -10,6 +10,14 @@ public class Path extends WorldObject {
         this.distance = settlementA.getDistance(settlementB);
     }
 
+    /**
+     * This function adds a neighbouring WorldObject to a list and sets the distance between the two
+     * objects if there are two neighbours in the list.
+     * 
+     * @param worldObject The parameter "worldObject" is an object of the class WorldObject that is
+     * being added as a neighbour to the current object.
+     * @return The method returns a boolean value.
+     */
     @Override
     public boolean addNeighbour(WorldObject worldObject) {
         if (worldObject == null) {
@@ -32,6 +40,13 @@ public class Path extends WorldObject {
         return true;
     }
 
+    /**
+     * This function removes a neighbour from a list of neighbours and returns true if successful.
+     * 
+     * @param worldObject The parameter "worldObject" is an object of type WorldObject that represents
+     * a neighboring object to be removed from the current object's list of neighbors.
+     * @return A boolean value is being returned.
+     */
     @Override
     public boolean removeNeighbour(WorldObject worldObject) {
         if (worldObject == null) {

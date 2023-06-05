@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import com.rootgame.model.NPC.NPCFactory;
@@ -21,9 +22,6 @@ import com.rootgame.model.World.WorldObjects.WorldObjectFactory;
 
 public class GenerateWorld {
 
-    private static Random random = new Random();
-
-
     /************************
      * World Generation API *
      ************************/
@@ -32,76 +30,137 @@ public class GenerateWorld {
      * fill World with Clearings *
      ****************************/
 
-    
     /**
-     * This function fills a world with clearings at random locations, ensuring that they are not too
+     * The function fills a world with settlements at random locations while ensuring they are not too
      * close to each other or out of bounds.
      * 
-     * @param clearings A List of Clearing objects that will be filled with new Clearing objects based
-     * on the other parameters.
-     * @param mapX The width of the map in units (integer value).
-     * @param mapY The height of the map, measured in units (not specified what units).
-     * @param clearingNames An array of Strings representing the names of the clearings to be created.
-     * 
-     * @throws IllegalArgumentException if the map dimensions are invalid or if the clearing names
+     * @param settlementList A list of WorldObject instances representing settlements in the game
+     * world.
+     * @param mapWidth The width of the map in units (integer value).
+     * @param mapHeight The height of the map, which is the total number of tiles or units vertically
+     * in the game world.
+     * @param settlementNames A list of strings representing the names of the settlements to be created
+     * in the world.
      */
-    public static void fillWorld(List<WorldObject> settlements,int mapX, int mapY, List<String> settlementNames) {
-        int listSize = settlementNames.size();
-        if (mapX <= 0 || mapY <= 0 || listSize == 0) {
-            throw new IllegalArgumentException("Invalid map dimensions or clearing names");
-        }
+    public static void fillWorld(List<WorldObject> settlementList, int mapWidth, int mapHeight, List<String> settlementNames) {
+        validateInput(mapWidth, mapHeight, settlementNames);
         
         Collections.shuffle(settlementNames);
-
-        int firstHalfX = mapX / 2;
-        int firstHalfY = mapY / 2;
-        int quarter = (listSize + 3) / 4;
+    
+        int numSettlements = settlementNames.size();
+        int firstHalfX = mapWidth / 2;
+        int firstHalfY = mapHeight / 2;
+        int quarter = (numSettlements + 3) / 4;
         
-        for (int i = 0; i < listSize; i++) {
+        Random random = new Random();
+        int minDistance = 100; // Minimum distance between settlements
+    
+        for (int i = 0; i < numSettlements; i++) {
             int j = i / quarter;
             int x, y;
-
+    
             do {
-                x = random.nextInt(firstHalfX ) + (j % 2 == 0 ? 10 : firstHalfX-10);
-                y = random.nextInt(firstHalfY ) + (j < 2 ? 10 : firstHalfY-10);
-            } while (isOutOfBounds(mapX, mapY, x, y) || !noObjectInDistance(settlements,x, y, 100));
-
-            settlements.add(WorldObjectFactory.createWorldObject(WorldObjectType.SETTLEMENT,settlementNames.get(i), x, y));
+                x = random.nextInt(firstHalfX) + (j % 2 == 0 ? 10 : firstHalfX - 10);
+                y = random.nextInt(firstHalfY) + (j < 2 ? 10 : firstHalfY - 10);
+            } while (isOutOfBounds(mapWidth, mapHeight, x, y) || !noObjectInDistance(settlementList, x, y, minDistance));
+    
+            settlementList.add(WorldObjectFactory.createWorldObject(WorldObjectType.SETTLEMENT, settlementNames.get(i), x, y));
         }
     }
 
     /**
-     * The function checks if the given coordinates are out of bounds within a specified size.
+     * The function validates input parameters for map dimensions and settlement names, throwing an
+     * exception if they are invalid.
      * 
-     * @param x The x-coordinate of a point in a two-dimensional grid.
-     * @param y The y parameter represents the vertical coordinate of a point in a two-dimensional
-     * space. It is used in the isOutOfBounds method to check if the point is outside the boundaries of
-     * a square grid with a size of "size".
-     * @return The method is returning a boolean value. It returns `false` if the given `x` and `y`
-     * coordinates are out of bounds, and `true` otherwise.
+     * @param mapWidth The width of the map, which is an integer value.
+     * @param mapHeight The height of the map, which is a positive integer value representing the
+     * number of rows in the map.
+     * @param settlementNames A list of strings representing the names of settlements on a map.
+     */
+    private static void validateInput(int mapWidth, int mapHeight, List<String> settlementNames) {
+        if (mapWidth <= 0 || mapHeight <= 0 || settlementNames.isEmpty()) {
+            throw new IllegalArgumentException("Invalid map dimensions or empty settlement names");
+        }
+    }
+  
+    /**
+     * The function checks if a given point (x,y) is outside the bounds of a map with dimensions
+     * (mapX,mapY).
+     * 
+     * @param mapX The maximum x-coordinate value allowed on the map.
+     * @param mapY The maximum value for the Y coordinate on the map.
+     * @param x The x-coordinate of a point on a map or grid.
+     * @param y The "y" parameter in the method "isOutOfBounds" represents the current y-coordinate of
+     * a point on a 2D map. It is used to check if the point is out of bounds of the map, where the map
+     * has a width of "mapX" and a height of "map
+     * @return The method is returning a boolean value, which is true if the x or y coordinates are
+     * less than 0 or greater than the maximum x or y coordinates of the map.
      */
     private static boolean isOutOfBounds(int mapX, int mapY, int x, int y) {
         return (x < 0 || x > mapX || y < 0 || y > mapY); 
     } 
 
+    /**
+     * The function checks if there are no WorldObjects within a certain minimum distance from a given
+     * point.
+     * 
+     * @param settlementList A list of WorldObject instances representing settlements.
+     * @param x The x-coordinate of the point being checked for distance from other objects.
+     * @param y The "y" parameter in the above code represents the y-coordinate of a point in a 2D
+     * plane. It is used in the distance calculation to determine the distance between two points.
+     * @param minDistance The minimum distance that an object must be from the point (x,y) in order for
+     * the method to return true.
+     * @return The method is returning a boolean value. It returns true if there are no objects in the
+     * given distance from the given coordinates, and false if there is at least one object within the
+     * given distance.
+     */
+    private static boolean noObjectInDistance(List<WorldObject> settlementList ,int x, int y, int minDistance) {
+        for (WorldObject settlement : settlementList) {
+            if (distance(settlement.getX(),settlement.getY(), x, y) < minDistance) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    /*******************************
-     * Neighbourhandling/add Paths *
+    /**
+     * The function calculates the distance between two points in a 2D plane using their coordinates.
+     * 
+     * @param x1 The x-coordinate of the first point.
+     * @param y1 The parameter y1 represents the y-coordinate of the first point in a two-dimensional
+     * coordinate system.
+     * @param x2 The parameter x2 represents the x-coordinate of the second point in the Cartesian
+     * plane.
+     * @param y2 The parameter y2 represents the y-coordinate of the second point in the Cartesian
+     * plane.
+     * @return The method is returning the distance between two points in a 2D plane, given their
+     * coordinates (x1, y1) and (x2, y2).
+     */
+    private static double distance(int x1, int y1, int x2, int y2) {
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+
+    /*********************
+     * Neighbourhandling *
      *************************************************************************************************************************************************************/
 
     /**
      * This function sets the neighbours of a list of WorldObjects and returns a boolean indicating
      * whether the neighbours were successfully set.
      * 
-     * @param settlements A list of WorldObject instances representing settlements in a game world.
+     * @param settlementList A list of WorldObject instances representing settlements in a game world.
      * @return The method is returning a boolean value, which indicates whether the neighbours of the
      * given list of WorldObjects have been successfully set or not.
      */
-    public static boolean setNeighbours(List<WorldObject> settlements) {
+    public static boolean setNeighbours(List<WorldObject> settlementList) {
         boolean neighboursSet = false;
-        setInitialNeighbours(settlements);
-        connectRemainingSettlements(settlements);
-        neighboursSet = checkNeighbours(settlements);
+        
+        setInitialNeighbours(settlementList);
+        connectRemainingsettlementList(settlementList);
+        neighboursSet = checkNeighbours(settlementList);
     
         return neighboursSet;
     }
@@ -110,15 +169,15 @@ public class GenerateWorld {
      * The function checks if a list of WorldObjects has at least 6 objects with 3 neighbors and 1
      * object with 4 neighbors.
      * 
-     * @param settlements A list of WorldObject instances representing settlements.
+     * @param settlementList A list of WorldObject instances representing settlements.
      * @return The method is returning a boolean value. It returns true if there are at least 6
      * settlements with 3 neighbours and at least 1 settlement with 4 neighbours in the given list of
      * settlements, and false otherwise.
      */
-    private static boolean checkNeighbours(List<WorldObject> settlements) {
+    private static boolean checkNeighbours(List<WorldObject> settlementList) {
         int count3 = 0;
         int count4 = 0;
-        for (WorldObject settlement : settlements) {
+        for (WorldObject settlement : settlementList) {
             if (settlement.getNeighbours().size() == 3) {
                 count3++;
             } else if (settlement.getNeighbours().size() == 4) {
@@ -133,14 +192,14 @@ public class GenerateWorld {
      * object and adding neighbours until each object has at least two neighbours within a certain
      * search range.
      * 
-     * @param settlements A list of WorldObject instances representing settlements in a world.
+     * @param settlementList A list of WorldObject instances representing settlements in a world.
      */
-    private static void setInitialNeighbours(List<WorldObject> settlements) {
-        for (WorldObject settlement : settlements) {
+    private static void setInitialNeighbours(List<WorldObject> settlementList) {
+        for (WorldObject settlement : settlementList) {
             int searchRange = 100;
             while (settlement.getNeighbours().size() < 2) {
-                for (WorldObject neighbour : settlements) {
-                    if (shouldAddNeighbour(settlement, neighbour, searchRange, settlements)) {
+                for (WorldObject neighbour : settlementList) {
+                    if (shouldAddNeighbour(settlement, neighbour, searchRange, settlementList)) {
                         settlement.addNeighbour(neighbour); 
                         neighbour.addNeighbour(settlement);
                     }
@@ -159,11 +218,11 @@ public class GenerateWorld {
      * settlements.
      * @param searchRange The maximum distance between the settlement and its neighbor for the neighbor
      * to be considered as a valid candidate for adding as a neighbor to the settlement.
-     * @param settlements A list of WorldObject representing all the settlements in the world.
+     * @param settlementList A list of WorldObject representing all the settlements in the world.
      * @return A boolean value indicating whether a neighbor should be added to a list of neighboring
      * settlements based on its distance from a given settlement and a search range.
      */
-    private static boolean shouldAddNeighbour(WorldObject settlement, WorldObject neighbor, int searchRange, List<WorldObject> settlements) {
+    private static boolean shouldAddNeighbour(WorldObject settlement, WorldObject neighbor, int searchRange, List<WorldObject> settlementList) {
         int distance = settlement.getDistance(neighbor);
         return  !settlement.equals(neighbor) 
                 && distance <= searchRange;         
@@ -173,25 +232,25 @@ public class GenerateWorld {
      * This function connects all the settlements in a list by finding the minimum clearing distance
      * between them.
      * 
-     * @param settlements A list of WorldObject representing settlements that need to be connected.
+     * @param settlementList A list of WorldObject representing settlements that need to be connected.
      */
-    private static void connectRemainingSettlements(List<WorldObject> settlements) {
+    private static void connectRemainingsettlementList(List<WorldObject> settlementList) {
         List<WorldObject> notConnectedList;
-        while (!(notConnectedList = getNotConnectedList(settlements)).isEmpty()) {
-            connectMinClearingDistance(settlements, notConnectedList);
+        while (!(notConnectedList = getNotConnectedList(settlementList)).isEmpty()) {
+            connectMinClearingDistance(settlementList, notConnectedList);
         }
     }
     
     /**
      * The function connects two WorldObject settlements with the shortest distance between them.
      * 
-     * @param settlements A list of WorldObject instances representing settlements that are already
+     * @param settlementList A list of WorldObject instances representing settlements that are already
      * connected to each other.
      * @param notConnectedList A list of WorldObjects that are not yet connected to any other
      * WorldObject.
      */
-    private static void connectMinClearingDistance(List<WorldObject> settlements, List<WorldObject> notConnectedList) {
-        List<WorldObject> connectedList = getConnectedList(settlements, notConnectedList);
+    private static void connectMinClearingDistance(List<WorldObject> settlementList, List<WorldObject> notConnectedList) {
+        List<WorldObject> connectedList = getConnectedList(settlementList, notConnectedList);
     
         WorldObject[] shortestPath = findShortestDistance(notConnectedList, connectedList);
     
@@ -203,32 +262,33 @@ public class GenerateWorld {
     }
     
     /**
-     * The function returns a list of clearings that are connected and have less than four neighbors,
-     * excluding those in a given not connected list.
+     * The function returns a list of WorldObjects that are connected and have less than 4 neighbors,
+     * given a list of settlements and a list of not connected WorldObjects.
      * 
-     * @param clearings A list of Clearing objects representing all the clearings in a game board.
-     * @param notConnectedList A list of Clearing objects that are not yet connected to the rest of the
-     * network.
-     * @return The method is returning a list of Clearing objects that are connected to other Clearing
-     * objects and have less than 4 neighbors, based on the input parameters of a list of all Clearing
-     * objects and a list of Clearing objects that are not connected to any other Clearing objects.
+     * @param settlementList A list of WorldObject instances representing settlements that are already
+     * connected to each other.
+     * @param notConnectedList A list of WorldObjects that are not yet connected to any other
+     * WorldObject.
+     * @return The method is returning a list of WorldObjects that are connected to each other and have
+     * less than 4 neighbours, based on the input parameters of a list of settlements and a list of not
+     * connected settlements.
      */
-    private static List<WorldObject> getConnectedList(List<WorldObject> settlements, List<WorldObject> notConnectedList) {
-        return settlements.stream()
+    private static List<WorldObject> getConnectedList(List<WorldObject> settlementList, List<WorldObject> notConnectedList) {
+        return settlementList.stream()
                 .filter(s -> !notConnectedList.contains(s) && s.getNeighbours().size() < 4)
                 .collect(Collectors.toList());
     }
 
     /**
-     * The function returns a list of Clearing objects that are not connected to the main group of
-     * Clearings and have less than 4 neighbors.
+     * The function returns a list of WorldObjects that are not connected to the main group and have
+     * less than 4 neighbors.
      * 
-     * @param clearings A list of Clearing objects representing the clearings on a game board.
-     * @return The method is returning a list of Clearing objects that are not connected to the main
-     * group of Clearing objects and have less than 4 neighbors.
+     * @param settlementList A list of WorldObject instances representing settlements.
+     * @return The method is returning a list of WorldObjects that are not connected to the main group
+     * of settlements and have less than 4 neighbors.
      */
-    private static List<WorldObject> getNotConnectedList(List<WorldObject> settlements) {
-        WorldObject settlement = settlements.get(0);
+    private static List<WorldObject> getNotConnectedList(List<WorldObject> settlementList) {
+        WorldObject settlement = settlementList.get(0);
         Queue<WorldObject> queue = new LinkedList<>();
         Set<WorldObject> visited = new HashSet<>();
     
@@ -245,7 +305,7 @@ public class GenerateWorld {
             }
         }
     
-        return settlements.stream()
+        return settlementList.stream()
                 .filter(c -> !visited.contains(c) && c.getNeighbours().size() < 4)
                 .collect(Collectors.toList());
     }
@@ -276,13 +336,13 @@ public class GenerateWorld {
      /**
       * The function adds paths between settlements and their neighbours to a list of paths.
       * 
-      * @param settlements A list of WorldObject instances representing settlements.
-      * @param paths A list of WorldObject representing the paths between settlements.
+      * @param settlementList A list of WorldObject instances representing settlements.
+      * @param pathList A list of WorldObject representing the paths between settlements.
       */
-     public static void setPaths(List<WorldObject> settlements, List<WorldObject> paths) {
-        for (WorldObject settlement : settlements) {
+     public static void setPaths(List<WorldObject> settlementList, List<WorldObject> pathList) {
+        for (WorldObject settlement : settlementList) {
             for (WorldObject neighbour : settlement.getNeighbours()) {
-                if (!paths.contains(neighbour)) {
+                if (!pathList.contains(neighbour)) {
                     WorldObject path = makePath(settlement, neighbour);
 
                     settlement.removeNeighbour(neighbour);
@@ -291,21 +351,21 @@ public class GenerateWorld {
                     neighbour.removeNeighbour(settlement);
                     neighbour.addNeighbour(path);
 
-                    paths.add(path);
+                    pathList.add(path);
                 }
             }
         }
-        setPathFactions(paths);
+        setPathFactions(pathList);
     }
 
     /**
-     * The function creates a path object between two settlements by calculating the midpoint
+     * The function creates a path object between two settlementList by calculating the midpoint
      * coordinates and using a WorldObjectFactory.
      * 
-     * @param settlementA A WorldObject representing one of the settlements connected by the path.
+     * @param settlementA A WorldObject representing one of the settlementList connected by the path.
      * @param settlementB The second settlement object that the path is being created between.
      * @return The method is returning a WorldObject, which is a path object created using the
-     * coordinates of two settlements and a name that indicates the connection between them.
+     * coordinates of two settlementList and a name that indicates the connection between them.
      */
     private static WorldObject makePath(WorldObject settlementA, WorldObject settlementB) {
         int pathX = (settlementA.getX() + settlementB.getX()) / 2;
@@ -321,56 +381,68 @@ public class GenerateWorld {
      * fill Objects with NPCs *
      *************************************************************************************************************************************************************/
     
-     /**
-     * The function populates each clearing in a world with a faction and its inhabitants.
+    /**
+     * The function populates a list of settlementList and a list of paths with different types of
+     * objects.
+     * 
+     * @param settlementList A list of WorldObject instances representing settlementList in a game world.
+     * @param pathList A list of WorldObjects representing paths in a game world.
      */
-    public static void populateWorld(List<WorldObject> settlements, List<WorldObject> paths) {
-        for (WorldObject settlement : settlements) {
+    public static void populateWorld(List<WorldObject> settlementList, List<WorldObject> pathList) {
+        for (WorldObject settlement : settlementList) {
             populateSettlement(settlement);
         }
-        for (WorldObject path : paths) {
+        for (WorldObject path : pathList) {
             populatePathWithBandit(path);
         }
     }
     
     /**
-     * The function populates a clearing with a random number of NPCs of different types and adds a
-     * leader NPC to the clearing.
+     * The function populates a settlement with NPCs of different types, including a leader, soldiers,
+     * civilians, traders, and either a caravan or mercenary.
      * 
-     * @param clearing an object of type Clearing, which represents a location in a game world where
-     * non-player characters (NPCs) can be placed.
+     * @param settlement A WorldObject representing a settlement in the game.
      */
     private static void populateSettlement(WorldObject settlement) {
-       
-        NPCType type = NPCType.LEADER;
-        settlement.addNPC(NPCFactory.createNPC(type, settlement.getFaction(), settlement));            
-
-        for (int i = 0; i < 10; i++) {
-            switch(i){
-                case 0: case 1: case 2: case 3:
-                    type = NPCType.SOLDIER;
-                    break;
-                case 4: case 5: case 6: case 7:
-                    type = NPCType.CIVILIAN;
-                    break;
-                case 8: case 9:
-                    type = NPCType.TRADER;
-                    break;
-                default:
-                    break;
+        final int NUM_NPC = 10;
+        final int NUM_SOLDIERS = 3;
+        final int NUM_CIVILIANS = 3;
+        final int NUM_TRADESMEN = 2;
+    
+        createAndAddNPC(NPCType.LEADER, settlement.getFaction(), settlement);
+    
+        for (int i = 0; i < NUM_NPC; i++) {
+            NPCType type;
+    
+            if (i <= NUM_SOLDIERS) {
+                type = NPCType.SOLDIER;
+            } else if (i <= NUM_SOLDIERS + NUM_CIVILIANS) {
+                type = NPCType.CIVILIAN;
+            } else if (i <= NUM_NPC - NUM_TRADESMEN) {
+                type = NPCType.TRADER;
+            } else {
+                double randomValue = Math.random();
+                type = randomValue < 0.3 ? NPCType.CARAVAN : randomValue < 0.6 ? NPCType.MERCENARY : NPCType.BANDIT;
             }
-            settlement.addNPC(NPCFactory.createNPC(type, settlement.getFaction(), settlement));            
-
+    
+            createAndAddNPC(type, settlement.getFaction(), settlement);
         }
-        if (Math.random() < 0.5) {
-            type = Math.random() < 0.5? NPCType.CARAVAN : NPCType.MERCENARY;
-        }
-        settlement.addNPC(NPCFactory.createNPC(type, settlement.getFaction(), settlement));
     }
 
+    private static void createAndAddNPC(NPCType type, String faction, WorldObject settlement) {
+        settlement.addNPC(NPCFactory.createNPC(type, faction, settlement));
+    }
+
+    /**
+     * This function populates a neutral path with a bandit NPC with a 50% chance.
+     * 
+     * @param path The parameter "path" is a WorldObject, which is an object representing a location or
+     * area in the game world. The method "populatePathWithBandit" adds a Bandit NPC to the path if the
+     * path's faction is "Neutral" and a random number is less than 0.
+     */
     private static void populatePathWithBandit(WorldObject path) {
         if (path.getFaction() == "Neutral" && Math.random() < 0.5) {
-            path.addNPC(NPCFactory.createNPC(NPCType.BANDIT, path.getFaction(), path));
+            createAndAddNPC(NPCType.BANDIT, path.getFaction(), path);
         }      
     }
 
@@ -379,45 +451,53 @@ public class GenerateWorld {
      *************************************************************************************************************************************************************/
     
     /**
-     * This function sets factions to a list of clearings and paths, and retries up to 10 times if it
-     * fails.
+     * This function sets factions to a list of world objects and returns true if successful, false
+     * otherwise.
      * 
-     * @param clearings A list of Clearing objects representing the different locations on a game board
-     * where players can move and take actions.
-     * @param paths A list of Path objects, which represent the connections between Clearing objects in
-     * a game.
+     * @param settlementList A list of WorldObject instances representing settlementList in a game world.
+     * @param pathList A list of WorldObjects representing paths in a game world.
+     * @param factionList A list of strings representing the factions that need to be set to the
+     * WorldObjects.
      * @return The method is returning a boolean value.
      */
-    public static boolean setFactionsToWorld(List<WorldObject> settlements, List<WorldObject> paths, List<String> factions) { 
-        int count = 0;
-        while (!setFactionToClearingList(settlements, factions) && count < 10) {
-            settlements.forEach(c -> c.setFaction(null));
-            count++;
+    public static boolean setFactionsToWorld(List<WorldObject> settlementList, List<WorldObject> pathList, List<String> factionList) { 
+        int maxAttempts = 10;
+        
+        for (int i = 0; i < maxAttempts; i++) {
+            clearFactions(settlementList);
+            if (setFactionToSettlementList(settlementList, factionList)) {
+                return checkFactions(settlementList);
+            }
         }
 
-        if (count >= 10) {
-            System.out.println("Factions could not be set.");
-            return false;
-        }
-        return checkFactions(settlements);
+        System.out.println("Factions could not be set.");
+        return false;
     }
 
     /**
-     * The function checks if the factions in a list of clearings have borders with each other.
+     * The function clears the faction of all WorldObjects in a given list.
      * 
-     * @param clearings A list of Clearing objects that represent different areas on a game board.
+     * @param settlementList A List of WorldObject instances representing settlements.
+     */
+    private static void clearFactions(List<WorldObject> settlementList) {
+        settlementList.forEach(c -> c.setFaction(null));
+    }
+
+    /**
+     * The function checks if all factions in a list of settlementList have contiguous borders.
+     * 
+     * @param settlementList a list of WorldObject instances representing settlementList in a game world.
      * @return A boolean value is being returned.
      */
-    public static boolean checkFactions(List<WorldObject> settlements) {
-        List<String> factions = new ArrayList<>();
-        for (WorldObject settlement : settlements) {
-            if (!factions.contains(settlement.getFaction())) {
-                factions.add(settlement.getFaction());
-            }
+    public static boolean checkFactions(List<WorldObject> settlementList) {
+        Set<String> factionSet = new HashSet<>();
+        for (WorldObject settlement : settlementList) {
+            factionSet.add(settlement.getFaction());
         }
+        List<String> factionList = new ArrayList<>(factionSet);
          
-        for (String faction : factions) {
-            if (!checkFactionBorders(factions, faction, settlements)) {
+        for (String faction : factionList) {
+            if (!checkFactionBorders(factionList, faction, settlementList)) {
                 return false;
             }
         }
@@ -426,84 +506,83 @@ public class GenerateWorld {
     } 
 
     /**
-     * The function checks if a given faction borders all other factions in a list of factions in a
-     * list of clearings.
-     * 
-     * @param factions A list of all the factions in the game.
-     * @param faction The faction for which we want to check if its borders are clear of other
+     * This function checks if a given faction has at least two settlementList bordering with different
      * factions.
-     * @param clearings A list of Clearing objects representing the different clearings on a game
-     * board.
-     * @return The method is returning a boolean value indicating whether all the factions in the given
-     * list of factions are bordering the clearings controlled by the given faction.
+     * 
+     * @param factionList A list of all the factions in the game.
+     * @param faction The faction for which we want to check the borders.
+     * @param settlementList a list of WorldObject instances representing settlementList in a game world
+     * @return The method is returning a boolean value.
      */
-    public static boolean checkFactionBorders(List<String> factions, String faction, List<WorldObject> settlements) {
-        List<String> remainingFactions = new ArrayList<>(factions);
+    public static boolean checkFactionBorders(List<String> factionList, String faction, List<WorldObject> settlementList) {
+        Set<String> remainingFactions = new HashSet<>(factionList);
         remainingFactions.remove(faction);
-        int count = 0;
-        int factionCount = 0;
+        int borderSettlementCount = 0;
     
-        List<WorldObject> factionClearings = settlements.stream()
-                .filter(c -> c.getFaction() == faction)
+        List<WorldObject> factionClearings = settlementList.stream()
+                .filter(settlement -> settlement.getFaction().equals(faction))
                 .collect(Collectors.toList());
     
         for (WorldObject settlement : factionClearings) {
-            for (WorldObject neighbor : settlement.getNeighbours()) {
-                if (remainingFactions.contains(neighbor.getFaction())) {
-                    remainingFactions.remove(neighbor.getFaction());
-                    count = 1;
-                }
+            int matchingNeighborCount = 0;
 
+            for (WorldObject neighbor : settlement.getNeighbours()) {
+                if (remainingFactions.remove(neighbor.getFaction())) {
+                    matchingNeighborCount++;
+                }
             }
-            factionCount += count;
-            count = 0;
+            borderSettlementCount += matchingNeighborCount;
         }
     
-        return (remainingFactions.size() == 0 && factionCount >= 2);
+        return borderSettlementCount >= 2;
     }
 
     /**
-     * The function sets a random number of factions to a list of clearings, ensuring that each faction
-     * has the appropriate number of clearings.
+     * This function sets factions to clearing lists based on the number of settlementList and factions
+     * provided.
      * 
-     * @param clearings A list of Clearing objects representing the different clearings on the game
-     * board.
-     * @return A boolean value is being returned.
+     * @param settlementList A list of WorldObject representing settlementList in a game.
+     * @param factionList A list of strings representing the different factions in the game, including
+     * "Neutral".
+     * @return The method is returning a boolean value. It returns true if all the factions have been
+     * successfully assigned to the clearings in the list of settlements, and false if there are not
+     * enough clearings with no faction to assign to a faction.
      */
-    private static boolean setFactionToClearingList(List<WorldObject> settlements, List<String> factions) {
-        factions.remove("Neutral");
-        int factionRatio = settlements.size() / factions.size(); 
+    private static boolean setFactionToSettlementList(List<WorldObject> settlementList, List<String> factionList) {
+        List<String> availableFactions = factionList.stream()
+            .filter(faction -> !faction.equals("Neutral"))
+            .collect(Collectors.toList());
+
+        int settlementsPerFaction = settlementList.size() / availableFactions.size(); 
         Map<String, Integer> factionMap = new HashMap<>(); 
-        for (int i = 0 ; i < factions.size() - 1 ; i++) {
-            factionMap.put(factions.get(i), random.nextInt(2) + factionRatio);
+        for (int i = 0 ; i < availableFactions.size() - 1 ; i++) {
+            factionMap.put(availableFactions.get(i), ThreadLocalRandom.current().nextInt(2) + settlementsPerFaction);
         }
 
-        // The code is adding a key-value pair to a map called `factionMap`. The key is the last element of a
-        // list called `factions`, and the value is the difference between the size of a list called
-        // `clearings` and the sum of all the values in `factionMap`. The `reduce` method is used to calculate
-        // the sum of all the values in `factionMap`.
-        factionMap.put(factions.get(factions.size() - 1), 
-        settlements.size() - factionMap.values().stream().reduce(0, Integer::sum)
-        ); 
+        int remainingSettlements = settlementList.size() - factionMap.values().stream().reduce(0, Integer::sum);
+        factionMap.put(availableFactions.get(availableFactions.size() - 1), remainingSettlements); 
 
         for (Map.Entry<String, Integer> entry : factionMap.entrySet()) {
-            List<WorldObject> clearingsWithNoFaction = getWayWithNoFaction(settlements, entry.getValue());
-            if (clearingsWithNoFaction == null) {
+            List<WorldObject> settlementsWithNoFaction = getWayWithNoFaction(settlementList, entry.getValue()); // 
+            if (settlementsWithNoFaction == null) {
                 return false;
+            } else {
+                setFactionToList(entry.getKey(), settlementsWithNoFaction , entry.getValue());
             }
-            setFactionToList(entry.getKey(), clearingsWithNoFaction , entry.getValue());
         }
         return true;
     } 
 
     /**
-     * This function sets a specified faction to a certain number of clearings in a list that currently
-     * have no faction.
+     * This function sets a given faction to a specified number of WorldObjects in a List that have no
+     * faction.
      * 
-     * @param faction The faction that we want to set to the clearings in the list.
-     * @param clearingsWithNoFaction A list of Clearing objects that currently have no faction assigned
-     * to them.
-     * @param count The number of clearings to set the faction for.
+     * @param faction A String representing the faction that will be set to the WorldObjects in the
+     * list.
+     * @param clearingsWithNoFaction A List of WorldObject instances that have no faction assigned to
+     * them.
+     * @param count The number of clearings in the list that need to have their faction set to the
+     * specified faction.
      */
     private static void setFactionToList(String faction, List<WorldObject> clearingsWithNoFaction , int count){
         for (int i = 0; i < count; i++) {
@@ -512,42 +591,41 @@ public class GenerateWorld {
     }
 
     /**
-     * This function returns a list of clearings with no faction that are connected to each other and
-     * have a specified count.
+     * This function returns a list of WorldObjects with no faction, connected to each other through
+     * their neighbors, with a specified count.
      * 
-     * @param clearings A list of Clearing objects representing the game board clearings.
-     * @param count The number of Clearings that should be returned in the List.
-     * @return The method returns a List of Clearing objects that have no faction and are connected to
-     * each other through their neighbors. The size of the list is determined by the "count" parameter
-     * passed to the method. If no such list can be found, the method returns null.
+     * @param settlementList A list of WorldObject instances representing settlements.
+     * @param count The number of WorldObjects to be returned in the resulting list.
+     * @return The method returns a List of WorldObjects that have no faction and are connected to each
+     * other through a chain of neighboring WorldObjects. The size of the list is determined by the
+     * "count" parameter passed to the method. If no such list can be found, the method returns null.
      */
-    private static List<WorldObject> getWayWithNoFaction( List <WorldObject> settlements, int count) {
-        List <WorldObject> listWithNoFaction = settlements.stream()
+    private static List<WorldObject> getWayWithNoFaction( List <WorldObject> settlementList, int count) {
+        List<WorldObject> listWithNoFaction = settlementList.stream()
                 .filter(c -> c.getFaction() == null)
                 .collect(Collectors.toList());
 
         Collections.shuffle(listWithNoFaction);
 
         for (WorldObject settlementWithNoFaction : listWithNoFaction) { 
-
             Queue<WorldObject> queue = new LinkedList<>();
-            Set<WorldObject> visited = new HashSet<>();      
+            Set<WorldObject> visited = new HashSet<>();  
+
             queue.add(settlementWithNoFaction);
             visited.add(settlementWithNoFaction);
 
-            while (!queue.isEmpty()) {
+            int currentCount  = 1;
 
+            while (!queue.isEmpty()) {
                 WorldObject currentClearing = queue.poll();
 
                 for (WorldObject neighbor : currentClearing.getNeighbours()) {
 
-                    if (!visited.contains(neighbor) && neighbor.getFaction() == null) {
-
+                    if (neighbor.getFaction() == null && visited.add(neighbor)) {
                         queue.add(neighbor);
-                        visited.add(neighbor);
+                        currentCount ++;
 
-                        if (visited.size() == count) {
-
+                        if (currentCount  == count) {
                             return new ArrayList<>(visited);
                         }
                     }
@@ -558,13 +636,13 @@ public class GenerateWorld {
     }
 
     /**
-     * The function sets the faction of each path in a list based on the factions of its neighboring
-     * paths.
+     * The function sets the faction of a list of WorldObject paths based on the factions of their
+     * neighboring WorldObjects.
      * 
-     * @param paths A list of Path objects.
+     * @param pathList A list of WorldObject instances representing paths in a game world.
      */
-    private static void setPathFactions(List<WorldObject> paths){
-        for (WorldObject path : paths) {
+    private static void setPathFactions(List<WorldObject> pathList){
+        for (WorldObject path : pathList) {
             if (path.getNeighbours().get(0).getFaction() == path.getNeighbours().get(1).getFaction()) {
                 path.setFaction(path.getNeighbours().get(0).getFaction());
             }
@@ -572,55 +650,5 @@ public class GenerateWorld {
                 path.setFaction("Neutral");
             }
         }
-    }
-
-    
-        
-
-    /********************
-     * helper Functions *
-     *************************************************************************************************************************************************************/
-    
-    /**
-     * The function checks if there are any clearings within a certain search range of a given point.
-     * 
-     * @param x The x-coordinate of the location being checked for clearing availability.
-     * @param y The parameter "y" represents the y-coordinate of the location being checked for
-     * clearing availability.
-     * @param searchRange The maximum distance (in number of tiles) from the given (x,y) coordinates
-     * within which the method will search for any existing clearings. If there is any clearing within
-     * this range, the method will return false, indicating that the clearing is not free. Otherwise,
-     * it will return true, indicating
-     * @return The method is returning a boolean value, either true or false.
-     */
-    private static boolean noObjectInDistance(List<WorldObject> clearings ,int x, int y, int searchRange) {
-        for (WorldObject clearing : clearings) {
-            if (!checkObjectInRange(clearing, x, y, searchRange)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * The function checks if there are no objects within a certain distance from a given point.
-     * 
-     * @param worldobject This is an object of the class WorldObject, which contains information about
-     * the position and other properties of an object in a virtual world.
-     * @param x The x-coordinate of the point from which the distance to the WorldObject is being
-     * measured.
-     * @param y The y-coordinate of the point being checked for distance from the WorldObject.
-     * @param searchRange The maximum distance from the point (x,y) within which the function will
-     * return false if there is a WorldObject present.
-     * @return The method returns a boolean value, either true or false.
-     */
-    private static boolean checkObjectInRange (WorldObject worldobject, int x, int y, int searchRange) {
-        int dX = worldobject.getX();
-        int dY = worldobject.getY();
-        int distance = (int) Math.sqrt(Math.pow(Math.abs(x - dX), 2) + Math.pow(Math.abs(y - dY), 2));
-        if (distance <= searchRange) {
-            return false;
-        }
-        return true;
     }
 }

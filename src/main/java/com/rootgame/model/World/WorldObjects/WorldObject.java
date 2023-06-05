@@ -267,6 +267,13 @@ public abstract class WorldObject {
         return new LinkedList<>(neighbours);
     }
 
+    /**
+     * This function adds a neighbour to a WorldObject if certain conditions are met and returns a
+     * boolean value indicating success or failure.
+     * 
+     * @param neighbour A WorldObject that is being added as a neighbour to the current WorldObject.
+     * @return The method returns a boolean value.
+     */
     public boolean addNeighbour(WorldObject neighbour) {
 
         if (neighbours.size() == 4) {
@@ -285,6 +292,17 @@ public abstract class WorldObject {
         return true;
     }
 
+    /**
+     * This function removes a WorldObject neighbour from a list of neighbours and returns true if
+     * successful.
+     * 
+     * @param neighbour The parameter "neighbour" is a WorldObject that represents a neighboring object
+     * that needs to be removed from a collection of neighbors. The method "removeNeighbour" returns a
+     * boolean value indicating whether the removal was successful or not.
+     * @return The method is returning a boolean value. If the specified `neighbour` object is
+     * successfully removed from the `neighbours` list, the method returns `true`. Otherwise, it
+     * returns `false`.
+     */
     public boolean removeNeighbour(WorldObject neighbour) {
         if (neighbours.remove(neighbour)) {
             return true;

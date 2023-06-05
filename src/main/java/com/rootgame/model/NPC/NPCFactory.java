@@ -15,25 +15,13 @@ public class NPCFactory {
     }
     
     /**
-     * This Java function returns a random animal object from a list of animals associated with a given
-     * faction.
+     * The function creates an NPC object with a random name, animal, loyalty, and faction based on the
+     * NPCType and WorldObject parameters.
      * 
-     * @param faction The "faction" parameter is an input of type "FactionEnum", which is an
-     * enumeration that represents a group or faction of animals. It is used to select a random animal
-     * from a list of animals that belong to the specified faction.
-     * @return The method `makeAnimal` is returning an object of type `Animal`. The specific `Animal`
-     * object being returned is randomly selected from an array of `Animal` objects that corresponds to
-     * the given `FactionEnum` faction.
-     */
-
-    /**
-     * The function creates an NPC object with a randomly generated name, animal, and attributes based
-     * on the given NPC type and faction.
-     * 
-     * @param npcType An enum representing the type of NPC being created (SOLDIER, CIVILIAN, TRADER, or
-     * LEADER).
-     * @param faction The faction that the NPC belongs to. It is of type FactionEnum.
-     * @return The method is returning an NPC object.
+     * @param npcType The type of NPC being created (e.g. civilian, trader, bandit, etc.).
+     * @param faction The faction that the NPC belongs to.
+     * @param worldObject The world object that the NPC will be associated with or located in.
+     * @return The method is returning an instance of the NPC class.
      */
     public static NPC createNPC(NPCType npcType, String faction, WorldObject worldObject) {
         String name;
@@ -58,6 +46,16 @@ public class NPCFactory {
         return npc;
     }
 
+    /**
+     * This Java function generates a random name for an animal based on its race and returns it as a
+     * string.
+     * 
+     * @param animal The parameter "animal" is a String representing the type of animal for which a
+     * random name is being generated.
+     * @return The method is returning a randomly generated name for a given animal, using lists of
+     * forenames and surnames specific to that animal's race. If there is an error (i.e. if there are
+     * not enough race names), the method returns the string "ERROR".
+     */
     private static String getRandomName(String animal) {
         List<List<String>> raceNames = raceNameMap.get(animal);
         if (raceNames.size() < 2) {

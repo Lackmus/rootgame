@@ -24,6 +24,10 @@ public class Settlement extends WorldObject {
         this.loyalty = loyalty;
     }
 
+    /**
+     * This function updates the state of a besieged object by decreasing its population, combat
+     * strength, and market value if it is currently under siege.
+     */
     @Override
     public void updateBesieged() {
         if (isBesieged() && siegeTimer < 3) {
@@ -45,16 +49,23 @@ public class Settlement extends WorldObject {
         this.siegeTimer = siegeTimer;
     }
 
+    /**
+     * This function sets a boolean value for a property, reduces the current population by half, and
+     * sets a timer to 3.
+     * 
+     * @param ruined a boolean value indicating whether the object is ruined or not.
+     */
     @Override
     public void setRuined(boolean ruined) {
         this.ruined = ruined;
         currentPopulation -= currentPopulation / 2;
         ruinTimer = 3;
-    }
+    }    
 
-    // set ruintimer
-    
-
+    /**
+     * This function updates the state of an object that has been ruined by decrementing a timer until
+     * it reaches zero and then setting the ruined state to false.
+     */
     @Override
     public void updateRuined() {
         if (isRuined() && ruinTimer > 0) {
@@ -65,6 +76,10 @@ public class Settlement extends WorldObject {
         }
     }
 
+    /**
+     * This function increases the population of a city if it is not besieged or ruined, and updates
+     * the market value and combat strength accordingly.
+     */
     @Override
     public void growPopulation() {
         if (isBesieged() || isRuined()) {

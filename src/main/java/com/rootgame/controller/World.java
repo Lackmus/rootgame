@@ -86,13 +86,19 @@ public class World {
         int retries = 0;
         try {
             
+            System.out.println("Setting Neighbours and Factions...");
             do {
                 clearWorld();
                 generateWorldData();    
             } while ((!setNeighbours() || !generateFactions()) && retries++ < 1000);
             
+            System.out.println("Setting Paths...");
             setPaths();
+
+            System.out.println("Populating world...");
             populateWorld();
+
+            System.out.println("Filling world list...");
             fillWorldList();
             notifyListeners(getWorldObjectList());
            

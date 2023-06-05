@@ -132,7 +132,7 @@ public class LoadedModule {
     }
 
     public static List<String> getFactionList() {
-        Set <String> factionSet = factionRaceMap.keySet();
+        Set<String> factionSet = factionRaceMap.keySet();
         return new ArrayList<>(factionSet);
     }
 
