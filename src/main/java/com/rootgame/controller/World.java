@@ -66,15 +66,12 @@ public class World {
      * parameter.
      */
     
-
     public void notifyListeners(List<WorldObject> list) {
         this.worldObjectList = list;
         for (ListUpdateListener listener : listeners) {
           listener.listUpdated(new ListUpdateEvent(this, list));
         }
     }
-
-   
 
     /**
      * This function generates a world by clearing it, generating world data, setting neighbors,
