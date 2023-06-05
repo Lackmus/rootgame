@@ -17,5 +17,5 @@ module com.rootgame {
     exports com.rootgame.model.World;
     exports com.rootgame.model.World.WorldObjects;
     exports com.rootgame.model.NPC;
-    exports com.rootgame.View;
+    exports com.rootgame.view;
 }

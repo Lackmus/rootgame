@@ -1,4 +1,4 @@
-package com.rootgame.View;
+package com.rootgame.view;
 
 import java.util.List;
 

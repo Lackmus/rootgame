@@ -1,6 +1,6 @@
 package com.rootgame;
 
-import com.rootgame.View.App;
+import com.rootgame.view.App;
 
 public class Main {
     public static void main(String[] args) {
