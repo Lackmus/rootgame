@@ -253,8 +253,6 @@ public abstract class WorldObject {
         return npcs;
     }
 
-  
-
     /*
      * Neighbour Methods
      */
@@ -308,6 +306,11 @@ public abstract class WorldObject {
             return true;
         }
         return false;
+    }
+
+    // clear neighbours
+    public void clearNeighbours() {
+        neighbours.clear();
     }
 
     /*

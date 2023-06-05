@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import com.rootgame.model.NPC.NPCFactory;
 import com.rootgame.model.NPC.NPCType;
 import com.rootgame.model.World.WorldObjects.WorldObjectType;
+import com.rootgame.model.World.WorldObjects.Settlement;
 import com.rootgame.model.World.WorldObjects.WorldObject;
 import com.rootgame.model.World.WorldObjects.WorldObjectFactory;
 
@@ -157,12 +158,31 @@ public class GenerateWorld {
      */
     public static boolean setNeighbours(List<WorldObject> settlementList) {
         System.out.println("Setting neighbours...");
-        setInitialNeighbours(settlementList);
-        connectRemainingsettlementList(settlementList);
-        if (checkNeighbours(settlementList)) {
-            return true;
+
+        for (int i = 0; i < settlementList.size(); i++){
+            System.out.println("Attempt " + i);
+            clearNeighbours(settlementList);
+            Collections.shuffle(settlementList);
+            setInitialNeighbours(settlementList);
+            connectRemainingsettlementList(settlementList);
+            if (checkNeighbours(settlementList)) {
+                return true;
+            }
         }
+        
         return false;
+    }
+
+    // clear neighbours
+    /**
+     * The function clears the neighbours of a list of WorldObjects.
+     * 
+     * @param settlementList A list of WorldObject instances representing settlements in a game world.
+     */
+    private static void clearNeighbours(List<WorldObject> settlementList) {
+        for (WorldObject settlement : settlementList) {
+            settlement.clearNeighbours();
+        }
     }
 
     /**
@@ -368,7 +388,7 @@ public class GenerateWorld {
      * @param settlementList A List of WorldObject instances representing settlements.
      */
     private static void clearFactions(List<WorldObject> settlementList) {
-        settlementList.forEach(c -> c.setFaction(null));
+        settlementList.forEach(settlement -> settlement.setFaction(null));
     }
 
     /**
