@@ -95,8 +95,9 @@ public class World {
             System.out.println("Populating world...");
             populateWorld();
 
-            System.out.println("Filling world list...");
             fillWorldList();
+
+            System.out.println("Drawing Map...");
             notifyListeners(getWorldObjectList());
            
         } catch (Exception e) {

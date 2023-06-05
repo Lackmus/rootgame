@@ -35,7 +35,6 @@ public class MapPane {
      * the map.
      */
     public static void drawMap(Pane mapPane, List<WorldObject> worldObjectList) {
-        System.out.println("Drawing map");
         for (WorldObject worldObject : worldObjectList) {
             if (worldObject.hasType(WorldObjectType.PATH)) {
                 drawPath(mapPane, worldObject);

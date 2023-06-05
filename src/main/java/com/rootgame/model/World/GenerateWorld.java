@@ -156,13 +156,13 @@ public class GenerateWorld {
      * given list of WorldObjects have been successfully set or not.
      */
     public static boolean setNeighbours(List<WorldObject> settlementList) {
-        boolean neighboursSet = false;
-        
+        System.out.println("Setting neighbours...");
         setInitialNeighbours(settlementList);
         connectRemainingsettlementList(settlementList);
-        neighboursSet = checkNeighbours(settlementList);
-    
-        return neighboursSet;
+        if (checkNeighbours(settlementList)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -184,7 +184,11 @@ public class GenerateWorld {
                 count4++;
             }
         }
-        return count3 >= 6 && count4 >= 1;
+        if (count3 >= 6 && count4 >= 1) {
+            System.out.println("Neighbours set successfully.");
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -329,6 +333,196 @@ public class GenerateWorld {
                 .orElseThrow();
     }
 
+    /****************
+     * set Factions *
+     *************************************************************************************************************************************************************/
+    
+    /**
+     * This function sets factions to a list of world objects and returns true if successful, false
+     * otherwise.
+     * 
+     * @param settlementList A list of WorldObject instances representing settlementList in a game world.
+     * @param pathList A list of WorldObjects representing paths in a game world.
+     * @param factionList A list of strings representing the factions that need to be set to the
+     * WorldObjects.
+     * @return The method is returning a boolean value.
+     */
+    public static boolean setFactionsToWorld(List<WorldObject> settlementList, List<WorldObject> pathList, List<String> factionList) { 
+        System.out.println("Setting factions...");
+        int maxAttempts = 10;
+        
+        for (int i = 0; i < maxAttempts; i++) {
+            clearFactions(settlementList);
+            if (setFactionToSettlementList(settlementList, factionList)) {
+                return true;
+            }
+        }
+
+        System.out.println("Factions could not be set.");
+        return false;
+    }
+
+    /**
+     * The function clears the faction of all WorldObjects in a given list.
+     * 
+     * @param settlementList A List of WorldObject instances representing settlements.
+     */
+    private static void clearFactions(List<WorldObject> settlementList) {
+        settlementList.forEach(c -> c.setFaction(null));
+    }
+
+    /**
+     * This function sets factions to clearing lists based on the number of settlementList and factions
+     * provided.
+     * 
+     * @param settlementList A list of WorldObject representing settlementList in a game.
+     * @param factionList A list of strings representing the different factions in the game, including
+     * "Neutral".
+     * @return The method is returning a boolean value. It returns true if all the factions have been
+     * successfully assigned to the clearings in the list of settlements, and false if there are not
+     * enough clearings with no faction to assign to a faction.
+     */
+    private static boolean setFactionToSettlementList(List<WorldObject> settlementList, List<String> factionList) {
+        List<String> availableFactions = factionList.stream()
+            .filter(faction -> !faction.equals("Neutral"))
+            .collect(Collectors.toList());
+
+        int settlementsPerFaction = settlementList.size() / availableFactions.size(); 
+        Map<String, Integer> factionMap = new HashMap<>(); 
+        for (int i = 0 ; i < availableFactions.size() - 1 ; i++) {
+            factionMap.put(availableFactions.get(i), ThreadLocalRandom.current().nextInt(2) + settlementsPerFaction);
+        }
+
+        int remainingSettlements = settlementList.size() - factionMap.values().stream().reduce(0, Integer::sum);
+        factionMap.put(availableFactions.get(availableFactions.size() - 1), remainingSettlements); 
+
+        for (Map.Entry<String, Integer> entry : factionMap.entrySet()) {
+            List<WorldObject> settlementsWithNoFaction = getWayWithNoFaction(settlementList, entry.getValue()); // 
+            if (settlementsWithNoFaction == null) {
+                return false;
+            } else {
+                setFactionToList(entry.getKey(), settlementsWithNoFaction , entry.getValue());
+            }
+        }
+        return checkFactions(settlementList);
+    } 
+
+    /**
+     * This function sets a given faction to a specified number of WorldObjects in a List that have no
+     * faction.
+     * 
+     * @param faction A String representing the faction that will be set to the WorldObjects in the
+     * list.
+     * @param clearingsWithNoFaction A List of WorldObject instances that have no faction assigned to
+     * them.
+     * @param count The number of clearings in the list that need to have their faction set to the
+     * specified faction.
+     */
+    private static void setFactionToList(String faction, List<WorldObject> clearingsWithNoFaction , int count){
+        for (int i = 0; i < count; i++) {
+            clearingsWithNoFaction.get(i).setFaction(faction);
+        }
+    }
+
+    /**
+     * This function returns a list of WorldObjects with no faction, connected to each other through
+     * their neighbors, with a specified count.
+     * 
+     * @param settlementList A list of WorldObject instances representing settlements.
+     * @param count The number of WorldObjects to be returned in the resulting list.
+     * @return The method returns a List of WorldObjects that have no faction and are connected to each
+     * other through a chain of neighboring WorldObjects. The size of the list is determined by the
+     * "count" parameter passed to the method. If no such list can be found, the method returns null.
+     */
+    private static List<WorldObject> getWayWithNoFaction( List <WorldObject> settlementList, int count) {
+        List<WorldObject> listWithNoFaction = settlementList.stream()
+                .filter(c -> c.getFaction() == null)
+                .collect(Collectors.toList());
+
+        Collections.shuffle(listWithNoFaction);
+
+        for (WorldObject settlementWithNoFaction : listWithNoFaction) { 
+            Queue<WorldObject> queue = new LinkedList<>();
+            Set<WorldObject> visited = new HashSet<>();  
+
+            queue.add(settlementWithNoFaction);
+            visited.add(settlementWithNoFaction);
+
+            int currentCount  = 1;
+
+            while (!queue.isEmpty()) {
+                WorldObject currentClearing = queue.poll();
+
+                for (WorldObject neighbor : currentClearing.getNeighbours()) {
+
+                    if (neighbor.getFaction() == null && visited.add(neighbor)) {
+                        queue.add(neighbor);
+                        currentCount ++;
+
+                        if (currentCount  == count) {
+                            return new ArrayList<>(visited);
+                        }
+                    }
+                }
+            }       
+        }
+        return null;
+    }
+
+    /**
+     * The function checks if all factions in a list of settlementList have contiguous borders.
+     * 
+     * @param settlementList a list of WorldObject instances representing settlementList in a game world.
+     * @return A boolean value is being returned.
+     */
+    public static boolean checkFactions(List<WorldObject> settlementList) {
+        Set<String> factionSet = new HashSet<>();
+        for (WorldObject settlement : settlementList) {
+            factionSet.add(settlement.getFaction());
+        }
+        List<String> factionList = new ArrayList<>(factionSet);
+         
+        for (String faction : factionList) {
+            if (!checkFactionBorders(factionList, faction, settlementList)) {
+                return false;
+            }
+        }
+        System.out.println("Factions set successfully.");
+        return true;
+    } 
+
+    /**
+     * This function checks if a given faction has at least two settlementList bordering with different
+     * factions.
+     * 
+     * @param factionList A list of all the factions in the game.
+     * @param faction The faction for which we want to check the borders.
+     * @param settlementList a list of WorldObject instances representing settlementList in a game world
+     * @return The method is returning a boolean value.
+     */
+    public static boolean checkFactionBorders(List<String> factionList, String faction, List<WorldObject> settlementList) {
+        Set<String> remainingFactions = new HashSet<>(factionList);
+        remainingFactions.remove(faction);
+        int borderSettlementCount = 0;
+    
+        List<WorldObject> factionClearings = settlementList.stream()
+                .filter(settlement -> settlement.getFaction().equals(faction))
+                .collect(Collectors.toList());
+    
+        for (WorldObject settlement : factionClearings) {
+            int matchingNeighborCount = 0;
+
+            for (WorldObject neighbor : settlement.getNeighbours()) {
+                if (remainingFactions.remove(neighbor.getFaction())) {
+                    matchingNeighborCount++;
+                }
+            }
+            borderSettlementCount += matchingNeighborCount;
+        }
+    
+        return borderSettlementCount >= 2;
+    }
+
      /************
      * add Paths *
      *************************************************************************************************************************************************************/
@@ -339,7 +533,7 @@ public class GenerateWorld {
       * @param settlementList A list of WorldObject instances representing settlements.
       * @param pathList A list of WorldObject representing the paths between settlements.
       */
-     public static void setPaths(List<WorldObject> settlementList, List<WorldObject> pathList) {
+      public static void setPaths(List<WorldObject> settlementList, List<WorldObject> pathList) {
         for (WorldObject settlement : settlementList) {
             for (WorldObject neighbour : settlement.getNeighbours()) {
                 if (!pathList.contains(neighbour)) {
@@ -376,6 +570,24 @@ public class GenerateWorld {
         path.addNeighbour(settlementB);
         return path;
     }
+
+     /**
+     * The function sets the faction of a list of WorldObject paths based on the factions of their
+     * neighboring WorldObjects.
+     * 
+     * @param pathList A list of WorldObject instances representing paths in a game world.
+     */
+    private static void setPathFactions(List<WorldObject> pathList){
+        for (WorldObject path : pathList) {
+            if (path.getNeighbours().get(0).getFaction() == path.getNeighbours().get(1).getFaction()) {
+                path.setFaction(path.getNeighbours().get(0).getFaction());
+            }
+            else {
+                path.setFaction("Neutral");
+            }
+        }
+    }
+
     
     /**************************
      * fill Objects with NPCs *
@@ -445,210 +657,4 @@ public class GenerateWorld {
             createAndAddNPC(NPCType.BANDIT, path.getFaction(), path);
         }      
     }
-
-    /****************
-     * set Factions *
-     *************************************************************************************************************************************************************/
-    
-    /**
-     * This function sets factions to a list of world objects and returns true if successful, false
-     * otherwise.
-     * 
-     * @param settlementList A list of WorldObject instances representing settlementList in a game world.
-     * @param pathList A list of WorldObjects representing paths in a game world.
-     * @param factionList A list of strings representing the factions that need to be set to the
-     * WorldObjects.
-     * @return The method is returning a boolean value.
-     */
-    public static boolean setFactionsToWorld(List<WorldObject> settlementList, List<WorldObject> pathList, List<String> factionList) { 
-        int maxAttempts = 10;
-        
-        for (int i = 0; i < maxAttempts; i++) {
-            clearFactions(settlementList);
-            if (setFactionToSettlementList(settlementList, factionList)) {
-                return checkFactions(settlementList);
-            }
-        }
-
-        System.out.println("Factions could not be set.");
-        return false;
-    }
-
-    /**
-     * The function clears the faction of all WorldObjects in a given list.
-     * 
-     * @param settlementList A List of WorldObject instances representing settlements.
-     */
-    private static void clearFactions(List<WorldObject> settlementList) {
-        settlementList.forEach(c -> c.setFaction(null));
-    }
-
-    /**
-     * The function checks if all factions in a list of settlementList have contiguous borders.
-     * 
-     * @param settlementList a list of WorldObject instances representing settlementList in a game world.
-     * @return A boolean value is being returned.
-     */
-    public static boolean checkFactions(List<WorldObject> settlementList) {
-        Set<String> factionSet = new HashSet<>();
-        for (WorldObject settlement : settlementList) {
-            factionSet.add(settlement.getFaction());
-        }
-        List<String> factionList = new ArrayList<>(factionSet);
-         
-        for (String faction : factionList) {
-            if (!checkFactionBorders(factionList, faction, settlementList)) {
-                return false;
-            }
-        }
-        
-        return true;
-    } 
-
-    /**
-     * This function checks if a given faction has at least two settlementList bordering with different
-     * factions.
-     * 
-     * @param factionList A list of all the factions in the game.
-     * @param faction The faction for which we want to check the borders.
-     * @param settlementList a list of WorldObject instances representing settlementList in a game world
-     * @return The method is returning a boolean value.
-     */
-    public static boolean checkFactionBorders(List<String> factionList, String faction, List<WorldObject> settlementList) {
-        Set<String> remainingFactions = new HashSet<>(factionList);
-        remainingFactions.remove(faction);
-        int borderSettlementCount = 0;
-    
-        List<WorldObject> factionClearings = settlementList.stream()
-                .filter(settlement -> settlement.getFaction().equals(faction))
-                .collect(Collectors.toList());
-    
-        for (WorldObject settlement : factionClearings) {
-            int matchingNeighborCount = 0;
-
-            for (WorldObject neighbor : settlement.getNeighbours()) {
-                if (remainingFactions.remove(neighbor.getFaction())) {
-                    matchingNeighborCount++;
-                }
-            }
-            borderSettlementCount += matchingNeighborCount;
-        }
-    
-        return borderSettlementCount >= 2;
-    }
-
-    /**
-     * This function sets factions to clearing lists based on the number of settlementList and factions
-     * provided.
-     * 
-     * @param settlementList A list of WorldObject representing settlementList in a game.
-     * @param factionList A list of strings representing the different factions in the game, including
-     * "Neutral".
-     * @return The method is returning a boolean value. It returns true if all the factions have been
-     * successfully assigned to the clearings in the list of settlements, and false if there are not
-     * enough clearings with no faction to assign to a faction.
-     */
-    private static boolean setFactionToSettlementList(List<WorldObject> settlementList, List<String> factionList) {
-        List<String> availableFactions = factionList.stream()
-            .filter(faction -> !faction.equals("Neutral"))
-            .collect(Collectors.toList());
-
-        int settlementsPerFaction = settlementList.size() / availableFactions.size(); 
-        Map<String, Integer> factionMap = new HashMap<>(); 
-        for (int i = 0 ; i < availableFactions.size() - 1 ; i++) {
-            factionMap.put(availableFactions.get(i), ThreadLocalRandom.current().nextInt(2) + settlementsPerFaction);
-        }
-
-        int remainingSettlements = settlementList.size() - factionMap.values().stream().reduce(0, Integer::sum);
-        factionMap.put(availableFactions.get(availableFactions.size() - 1), remainingSettlements); 
-
-        for (Map.Entry<String, Integer> entry : factionMap.entrySet()) {
-            List<WorldObject> settlementsWithNoFaction = getWayWithNoFaction(settlementList, entry.getValue()); // 
-            if (settlementsWithNoFaction == null) {
-                return false;
-            } else {
-                setFactionToList(entry.getKey(), settlementsWithNoFaction , entry.getValue());
-            }
-        }
-        return true;
-    } 
-
-    /**
-     * This function sets a given faction to a specified number of WorldObjects in a List that have no
-     * faction.
-     * 
-     * @param faction A String representing the faction that will be set to the WorldObjects in the
-     * list.
-     * @param clearingsWithNoFaction A List of WorldObject instances that have no faction assigned to
-     * them.
-     * @param count The number of clearings in the list that need to have their faction set to the
-     * specified faction.
-     */
-    private static void setFactionToList(String faction, List<WorldObject> clearingsWithNoFaction , int count){
-        for (int i = 0; i < count; i++) {
-            clearingsWithNoFaction.get(i).setFaction(faction);
-        }
-    }
-
-    /**
-     * This function returns a list of WorldObjects with no faction, connected to each other through
-     * their neighbors, with a specified count.
-     * 
-     * @param settlementList A list of WorldObject instances representing settlements.
-     * @param count The number of WorldObjects to be returned in the resulting list.
-     * @return The method returns a List of WorldObjects that have no faction and are connected to each
-     * other through a chain of neighboring WorldObjects. The size of the list is determined by the
-     * "count" parameter passed to the method. If no such list can be found, the method returns null.
-     */
-    private static List<WorldObject> getWayWithNoFaction( List <WorldObject> settlementList, int count) {
-        List<WorldObject> listWithNoFaction = settlementList.stream()
-                .filter(c -> c.getFaction() == null)
-                .collect(Collectors.toList());
-
-        Collections.shuffle(listWithNoFaction);
-
-        for (WorldObject settlementWithNoFaction : listWithNoFaction) { 
-            Queue<WorldObject> queue = new LinkedList<>();
-            Set<WorldObject> visited = new HashSet<>();  
-
-            queue.add(settlementWithNoFaction);
-            visited.add(settlementWithNoFaction);
-
-            int currentCount  = 1;
-
-            while (!queue.isEmpty()) {
-                WorldObject currentClearing = queue.poll();
-
-                for (WorldObject neighbor : currentClearing.getNeighbours()) {
-
-                    if (neighbor.getFaction() == null && visited.add(neighbor)) {
-                        queue.add(neighbor);
-                        currentCount ++;
-
-                        if (currentCount  == count) {
-                            return new ArrayList<>(visited);
-                        }
-                    }
-                }
-            }       
-        }
-        return null;
-    }
-
-    /**
-     * The function sets the faction of a list of WorldObject paths based on the factions of their
-     * neighboring WorldObjects.
-     * 
-     * @param pathList A list of WorldObject instances representing paths in a game world.
-     */
-    private static void setPathFactions(List<WorldObject> pathList){
-        for (WorldObject path : pathList) {
-            if (path.getNeighbours().get(0).getFaction() == path.getNeighbours().get(1).getFaction()) {
-                path.setFaction(path.getNeighbours().get(0).getFaction());
-            }
-            else {
-                path.setFaction("Neutral");
-            }
-        }
-    }
-}
+}    
