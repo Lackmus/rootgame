@@ -141,7 +141,6 @@ public class EvolveWorld {
                 }
             }
         }
-
         return buildPath(destination, previous);
     }
 
