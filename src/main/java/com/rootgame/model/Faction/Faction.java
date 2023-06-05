@@ -1,4 +1,4 @@
-package com.rootgame.model.World.Factions;
+package com.rootgame.model.Faction;
 
 import java.util.ArrayList;
 import java.util.List;

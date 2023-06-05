@@ -1,9 +1,11 @@
-package com.rootgame.model.World;
+package com.rootgame.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rootgame.model.NPC.FactionRaces;
+import com.rootgame.model.LoadedModule;
+import com.rootgame.model.World.EvolveWorld;
+import com.rootgame.model.World.GenerateWorld;
 import com.rootgame.model.World.MyObservable.ListUpdateEvent;
 import com.rootgame.model.World.MyObservable.ListUpdateListener;
 import com.rootgame.model.World.WorldObjects.WorldObject;
@@ -24,8 +26,8 @@ public class World {
     private List<String> factions;     // List of factions
     
     public World (int mapX, int mapY) {
-        clearingNames = FactionRaces.getCityNames();
-        factions = FactionRaces.getFactionList();
+        clearingNames = LoadedModule.getCityNames();
+        factions = LoadedModule.getFactionList();
         listeners = new ArrayList<>();
         this.mapX = mapX;
         this.mapY = mapY;

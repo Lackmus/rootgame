@@ -1,4 +1,4 @@
-package com.rootgame.model.NPC;
+package com.rootgame.model;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,16 +19,16 @@ import org.json.JSONObject;
 
 import javafx.scene.paint.Color;
 
-public class FactionRaces {
+public class LoadedModule {
 
     private static Map<String, List<String>> factionRaceMap = new HashMap<>();
     private static Map<String, Color> factionColorMap = new HashMap<>();
     private static Map<String, List<List<String>>> raceNameMap = new HashMap<>();
     private static List<String> cityNames = new ArrayList<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(FactionRaces.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoadedModule.class);
 
-    private FactionRaces (){} // Private constructor to prevent instantiation
+    private LoadedModule (){} // Private constructor to prevent instantiation
     
     public static void loadModule(String module) {
         try (Stream<String> lines = Files.lines(Paths.get("FactionRaces.json"))) {

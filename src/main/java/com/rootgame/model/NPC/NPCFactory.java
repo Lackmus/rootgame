@@ -3,12 +3,13 @@ package com.rootgame.model.NPC;
 import java.util.List;
 import java.util.Map;
 
+import com.rootgame.model.LoadedModule;
 import com.rootgame.model.World.WorldObjects.WorldObject;
 
 public class NPCFactory {
 
-    private static Map<String, List<List<String>>> raceNameMap = FactionRaces.getRaceNameMap();
-    private static Map<String, List<String>> factionRaceMap = FactionRaces.getFactionRaceMap();
+    private static Map<String, List<List<String>>> raceNameMap = LoadedModule.getRaceNameMap();
+    private static Map<String, List<String>> factionRaceMap = LoadedModule.getFactionRaceMap();
 
     private NPCFactory() {
     }
@@ -49,7 +50,7 @@ public class NPCFactory {
             default:  
                 break;
         }
-        animal = factionRaceMap.get(faction).get((int) (Math.random() * FactionRaces.getFactionRaceMap().get(faction).size()));
+        animal = factionRaceMap.get(faction).get((int) (Math.random() * LoadedModule.getFactionRaceMap().get(faction).size()));
         name = getRandomName(animal);
         NPC npc = new NPC(name, animal, npcType, faction, worldObject);
         npc.setLoyalty(loyalty);

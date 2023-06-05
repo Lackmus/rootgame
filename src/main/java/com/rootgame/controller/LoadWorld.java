@@ -1,4 +1,4 @@
-package com.rootgame.model.World;
+package com.rootgame.controller;
 
 import org.json.JSONArray;
 import org.json.JSONException;

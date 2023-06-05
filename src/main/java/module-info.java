@@ -11,6 +11,8 @@ module com.rootgame {
 
     opens com.rootgame to javafx.fxml;
     exports com.rootgame;
+    exports com.rootgame.controller;
+    exports com.rootgame.model;
     exports com.rootgame.model.World.MyObservable;    
     exports com.rootgame.model.World;
     exports com.rootgame.model.World.WorldObjects;

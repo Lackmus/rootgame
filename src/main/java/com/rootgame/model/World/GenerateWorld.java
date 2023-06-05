@@ -99,12 +99,9 @@ public class GenerateWorld {
      */
     public static boolean setNeighbours(List<WorldObject> settlements) {
         boolean neighboursSet = false;
-        System.out.println("Setting neighbours");
         setInitialNeighbours(settlements);
         connectRemainingSettlements(settlements);
         neighboursSet = checkNeighbours(settlements);
-        
-        System.out.println(neighboursSet? "Neighbours set" : "Neighbours not set, trying again");            
     
         return neighboursSet;
     }
@@ -392,10 +389,8 @@ public class GenerateWorld {
      * @return The method is returning a boolean value.
      */
     public static boolean setFactionsToWorld(List<WorldObject> settlements, List<WorldObject> paths, List<String> factions) { 
-        System.out.println("Setting factions...");
         int count = 0;
         while (!setFactionToClearingList(settlements, factions) && count < 10) {
-            System.out.println("Retrying to set factions...");
             settlements.forEach(c -> c.setFaction(null));
             count++;
         }

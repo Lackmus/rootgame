@@ -1,4 +1,4 @@
-package com.rootgame;
+package com.rootgame.View;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,9 +12,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import com.rootgame.View.MapPane;
-import com.rootgame.model.NPC.FactionRaces;
-import com.rootgame.model.World.World;
+import com.rootgame.controller.World;
+import com.rootgame.model.LoadedModule;
 import com.rootgame.model.World.MyObservable.ListUpdateEvent;
 import com.rootgame.model.World.MyObservable.ListUpdateListener;
 
@@ -25,7 +24,7 @@ public class App extends Application implements ListUpdateListener{
     @Override
     public void start(Stage primaryStage) { 
         System.out.println("Java version: " + System.getProperty("java.version"));
-        FactionRaces.loadModule("Root");
+        LoadedModule.loadModule("Root");
         primaryStage.setTitle("Map Application");
         mapPane = new Pane();
         mapPane.setPrefSize(500, 500);
@@ -42,7 +41,6 @@ public class App extends Application implements ListUpdateListener{
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // fix the scene size and prevent it from being resized
         primaryStage.setResizable(false);
     }
 
@@ -100,7 +98,5 @@ public class App extends Application implements ListUpdateListener{
         infoAlert.showAndWait();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    
 }
