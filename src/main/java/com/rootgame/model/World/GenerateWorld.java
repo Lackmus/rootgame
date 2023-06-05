@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import com.rootgame.model.NPC.NPCFactory;
 import com.rootgame.model.NPC.NPCType;
 import com.rootgame.model.World.WorldObjects.WorldObjectType;
-import com.rootgame.model.World.WorldObjects.Settlement;
 import com.rootgame.model.World.WorldObjects.WorldObject;
 import com.rootgame.model.World.WorldObjects.WorldObjectFactory;
 
