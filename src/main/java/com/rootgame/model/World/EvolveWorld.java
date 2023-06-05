@@ -1,6 +1,5 @@
 package com.rootgame.model.World;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,7 +20,6 @@ public class EvolveWorld {
     
     public static void evolveWorld(List<WorldObject> worldObjectList) {
         evolveNPCs(worldObjectList);
-        System.out.println("Evolved");
     }
 
 /***************
@@ -29,24 +27,17 @@ public class EvolveWorld {
  *************************************************************************************************************************************************************/
 
     private static void evolveNPCs(List<WorldObject> worldObjectList) {
-        List<WorldObject> synchronizedList = Collections.synchronizedList(worldObjectList);
 
-        synchronized (synchronizedList) {
-            for (WorldObject worldObject : synchronizedList) {
-                synchronized (worldObject) {
-                    for (NPC npc : worldObject.getNPCs()) {
-                        evolveNPC(npc, synchronizedList);
-                    }
-                }
-            }            
-            for (WorldObject worldObject : synchronizedList) {
-                synchronized (worldObject) {
-                    for (NPC npc : worldObject.getNPCs()) {
-                        npc.setMoved(false);
-                    }
-                }
+        for (WorldObject worldObject : worldObjectList) {
+            List<NPC> npcList = worldObject.getNPCs();
+            for (int i = 0; i < npcList.size(); i++) {
+                evolveNPC(npcList.get(i), worldObjectList);
             }
-        }
+        }   
+
+        worldObjectList.stream()
+            .flatMap(worldObject -> worldObject.getNPCs().stream())
+            .forEach(npc -> npc.setMoved(false));
     }
 
     private static void evolveNPC(NPC npc, List<WorldObject> worldObjectList) {
