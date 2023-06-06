@@ -661,7 +661,7 @@ public class GenerateWorld {
                 type = NPCType.TRADER;
             } else {
                 double randomValue = Math.random();
-                type = randomValue < 0.5 ? NPCType.MERCENARY : NPCType.BANDIT;
+                type = randomValue < 0.8 ? NPCType.MERCENARY : NPCType.BANDIT;
             }
     
             createAndAddNPC(type, settlement.getFaction(), settlement);
