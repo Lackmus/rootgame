@@ -28,11 +28,11 @@ public class NPCFactory {
         String animal;
         int loyalty = (int) (Math.random() * 100);
         switch (npcType) {
-            case CIVILIAN: case TRADER:
+            case CIVILIAN: case TRADER: case CARAVAN:
                 if (faction != "Neutral" && Math.random() > 0.5)
                     faction = "Neutral";
                 break;
-            case BANDIT: case CARAVAN: case MERCENARY:
+            case BANDIT: case MERCENARY:
                 faction = "Neutral";
                 break;
             default:  

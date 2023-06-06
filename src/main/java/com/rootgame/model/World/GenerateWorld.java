@@ -520,26 +520,25 @@ public class GenerateWorld {
      * @return The method is returning a boolean value.
      */
     public static boolean checkFactionBorders(List<String> factionList, String faction, List<WorldObject> settlementList) {
-        Set<String> remainingFactions = new HashSet<>(factionList);
-        remainingFactions.remove(faction);
+        Set<String> remainingFactions = factionList.stream().filter(f -> !f.equals(faction)).collect(Collectors.toSet()) ;
         int borderSettlementCount = 0;
-    
-        List<WorldObject> factionClearings = settlementList.stream()
+        int matchingNeighborCount = 0;
+
+        List<WorldObject> factionSettlements = settlementList.stream()
                 .filter(settlement -> settlement.getFaction().equals(faction))
                 .collect(Collectors.toList());
     
-        for (WorldObject settlement : factionClearings) {
-            int matchingNeighborCount = 0;
-
+        for (WorldObject settlement : factionSettlements) {
             for (WorldObject neighbor : settlement.getNeighbours()) {
-                if (remainingFactions.remove(neighbor.getFaction())) {
-                    matchingNeighborCount++;
+                if (remainingFactions.remove(neighbor.getFaction())) {         
+                    matchingNeighborCount = 1;
                 }
             }
             borderSettlementCount += matchingNeighborCount;
+            matchingNeighborCount = 0;
         }
-    
-        return borderSettlementCount >= 2;
+
+        return borderSettlementCount > 1;
     }
 
      /************
@@ -622,6 +621,16 @@ public class GenerateWorld {
         for (WorldObject settlement : settlementList) {
             populateSettlement(settlement);
         }
+
+        Collections.shuffle(settlementList);
+        int caravanCount = 3;
+        for (WorldObject settlement : settlementList) {
+            if (caravanCount > 0) {
+                createAndAddNPC(NPCType.CARAVAN, settlement.getFaction(), settlement);
+                caravanCount--;
+            }
+        }
+
         for (WorldObject path : pathList) {
             populatePathWithBandit(path);
         }
@@ -652,7 +661,7 @@ public class GenerateWorld {
                 type = NPCType.TRADER;
             } else {
                 double randomValue = Math.random();
-                type = randomValue < 0.3 ? NPCType.CARAVAN : randomValue < 0.6 ? NPCType.MERCENARY : NPCType.BANDIT;
+                type = randomValue < 0.5 ? NPCType.MERCENARY : NPCType.BANDIT;
             }
     
             createAndAddNPC(type, settlement.getFaction(), settlement);
