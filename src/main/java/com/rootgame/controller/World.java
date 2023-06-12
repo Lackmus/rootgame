@@ -149,7 +149,7 @@ public class World {
 
     public void evolveWorld() {
         System.out.println("Evolving world...");
-        for (int i = 0; i < 1000; i++)    {  
+        for (int i = 0; i < 1; i++)    {  
             try{  
                 EvolveWorld.evolveWorld(worldObjectList);
                 notifyListeners(worldObjectList); 

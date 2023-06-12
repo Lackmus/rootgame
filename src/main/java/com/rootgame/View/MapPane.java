@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.rootgame.model.LoadedModule;
 import com.rootgame.model.NPC.NPC;
-import com.rootgame.model.NPC.NPCType;
 import com.rootgame.model.World.WorldObjects.WorldObject;
 import com.rootgame.model.World.WorldObjects.WorldObjectType;
 
@@ -43,7 +42,7 @@ public class MapPane {
         }
         for (WorldObject worldObject : worldObjectList) {
             if (worldObject.hasType(WorldObjectType.SETTLEMENT)) {
-                drawClearing(mapPane, worldObject);
+                drawSettlement(mapPane, worldObject);
             } 
         }
     }
@@ -56,10 +55,11 @@ public class MapPane {
         int y = worldObject.getY();
         Color color = LoadedModule.getFactionColor(worldObject.getFaction());
 
+        /* 
         if ( worldObject.getNPCs().stream().anyMatch(npc -> npc.getType().equals(NPCType.CARAVAN))) {
             color = Color.BLACK;
         }
-
+        */
         Line line = new Line(start[0], start[1], end[0], end[1]);
         line.setStroke(color);
         line.setStrokeWidth(1);
@@ -74,14 +74,17 @@ public class MapPane {
         });
     }
 
-    private static void drawClearing(Pane mapPane, WorldObject worldObject) {       
+    private static void drawSettlement(Pane mapPane, WorldObject worldObject) {       
 
         int x = worldObject.getX();
         int y = worldObject.getY();
         Color color = LoadedModule.getFactionColor(worldObject.getFaction());
+
+        /*
         if ( worldObject.getNPCs().stream().anyMatch(npc -> npc.getType().equals(NPCType.CARAVAN))) {
             color = Color.BLACK;
         }
+        */
 
         Circle circle = drawCircle(mapPane, x, y, color,10);
         circle.setOnMouseClicked(event -> showClearingInfo(worldObject));
@@ -102,7 +105,6 @@ public class MapPane {
         circle.setStroke(color);
         circle.setStrokeWidth(2);
 
-
         StackPane container = new StackPane(text);
         container.setMouseTransparent(true);
         container.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: white; ");
@@ -110,6 +112,18 @@ public class MapPane {
         container.setLayoutX(x - container.getPrefWidth() / 2);
         container.setLayoutY(y - 40);
     
+        adjustContainer(mapPane, container);
+        
+        mapPane.getChildren().add(container);
+        circle.setOnMouseExited(exitEvent  -> {
+            mapPane.getChildren().remove(container);
+            circle.setRadius(circle.getRadius() - 2);
+            circle.setFill(color);
+            circle.setStrokeWidth(1);
+        });
+    }
+
+    private static void adjustContainer(Pane mapPane, StackPane container){
         Boolean isLeft = false;
         Boolean isRight = false;
         Boolean isTop = false;
@@ -132,16 +146,7 @@ public class MapPane {
                 container.setLayoutY(container.getLayoutY() + 1);
             }
         }
-        mapPane.getChildren().add(container);
-        circle.setOnMouseExited(exitEvent  -> {
-            mapPane.getChildren().remove(container);
-            circle.setRadius(circle.getRadius() - 2);
-            circle.setFill(color);
-            circle.setStrokeWidth(1);
-        });
     }
-
-    
 
     private static Circle drawCircle(Pane mapPane, double centerX, double centerY, Color color, double radius) {
         Circle circle = new Circle(centerX, centerY, radius);
