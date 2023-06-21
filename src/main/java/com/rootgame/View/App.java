@@ -97,6 +97,4 @@ public class App extends Application implements ListUpdateListener{
         infoAlert.setContentText(message);
         infoAlert.showAndWait();
     }
-
-    
 }
