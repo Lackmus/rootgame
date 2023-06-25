@@ -26,9 +26,9 @@ public class GenerateWorld {
      * World Generation API *
      ************************/
         
-    /*****************************
-     * fill World with Clearings *
-     ****************************/
+    /*******************************
+     * fill World with settlements *
+     *******************************/
 
     /**
      * The function fills a world with settlements at random locations while ensuring they are not too
