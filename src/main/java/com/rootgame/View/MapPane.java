@@ -87,7 +87,7 @@ public class MapPane {
         */
 
         Circle circle = drawCircle(mapPane, x, y, color,10);
-        circle.setOnMouseClicked(event -> showClearingInfo(worldObject));
+        circle.setOnMouseClicked(event -> showSettlementInfo(worldObject));
         circle.setOnMouseEntered(event -> {
             handleMouseEntered(circle, x, y, mapPane, worldObject);
         }); 
@@ -180,7 +180,7 @@ public class MapPane {
         stage.show();
     }
 
-    private static void showClearingInfo(WorldObject worldObject) {
+    private static void showSettlementInfo(WorldObject worldObject) {
         Stage stage = new Stage();
         stage.setTitle("Settlement");
 
@@ -198,6 +198,10 @@ public class MapPane {
             worldObject.neighboursToString()
         );
 
+        Text actualNeighbour = new Text(
+            worldObject.getNeighbours().toString()
+        );
+
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(10));
         vBox.getChildren().addAll(
@@ -206,6 +210,7 @@ public class MapPane {
             new Text(worldObject.getNPCs().toString()),
             new Text("Neighbours:"),
             neighbourText,
+            actualNeighbour,
             new Label(""),
             new Label("Description:"),
             textArea
@@ -218,7 +223,7 @@ public class MapPane {
         Scene scene = new Scene(root, 500, 500);//350, 300
         stage.setScene(scene);
         stage.show();
-        stage.setResizable(false);
+        stage.setResizable(true);
     }
 }   
 

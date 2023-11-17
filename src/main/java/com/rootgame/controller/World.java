@@ -16,13 +16,13 @@ public class World {
     private ArrayList<ListUpdateListener> listeners;
     
     private List<WorldObject> worldObjectList;
-    private List<WorldObject> settlements;   // List of Clearing objects
+    private List<WorldObject> settlements;   // List of settlement objects
     private List<WorldObject> paths;           // List of Path objects
 
     private int mapX;                   // Width of the world
     private int mapY;                   // Height of the world
     
-    private List<String> clearingNames; // List of clearing names
+    private List<String> clearingNames; // List of settlement names
     private List<String> factions;     // List of factions
     
     public World (int mapX, int mapY) {

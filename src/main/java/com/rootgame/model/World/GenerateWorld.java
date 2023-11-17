@@ -260,7 +260,7 @@ public class GenerateWorld {
     private static void connectRemainingsettlementList(List<WorldObject> settlementList) {
         List<WorldObject> notConnectedList;
         while (!(notConnectedList = getNotConnectedList(settlementList)).isEmpty()) {
-            connectMinClearingDistance(settlementList, notConnectedList);
+            connectMinSettlementDistance(settlementList, notConnectedList);
         }
     }
     
@@ -272,7 +272,7 @@ public class GenerateWorld {
      * @param notConnectedList A list of WorldObjects that are not yet connected to any other
      * WorldObject.
      */
-    private static void connectMinClearingDistance(List<WorldObject> settlementList, List<WorldObject> notConnectedList) {
+    private static void connectMinSettlementDistance(List<WorldObject> settlementList, List<WorldObject> notConnectedList) {
         List<WorldObject> connectedList = getConnectedList(settlementList, notConnectedList);
     
         WorldObject[] shortestPath = findShortestDistance(notConnectedList, connectedList);

@@ -28,7 +28,7 @@ public abstract class WorldObject {
     protected int currentPopulation;
     protected String description;
     protected WorldObjectType type;
-    protected List<String> neighbourStrings; 
+    protected Set<String> neighbourStrings; 
 
     public WorldObject(WorldObjectType type, String name, int x, int y) {
         this.name = name;
@@ -51,7 +51,7 @@ public abstract class WorldObject {
         neighbours = new HashSet<>();
         npcs = new LinkedList<>();
         fightList = new LinkedList<>();
-        neighbourStrings = new LinkedList<>();
+        neighbourStrings = new HashSet<>();
     }
 
     /*
@@ -277,6 +277,7 @@ public abstract class WorldObject {
         if (neighbours.size() == 4) {
             return false;
         }
+        
         if (neighbour.getNeighbours().size() == 4 && !neighbour.getNeighbours().contains(this)){
             return false;
         }
@@ -285,8 +286,10 @@ public abstract class WorldObject {
             return false;
         }
         
-        if(!neighbour.hasType(WorldObjectType.PATH))
+        if(!neighbour.hasType(WorldObjectType.PATH)){
             neighbourStrings.add(neighbour.getName());
+        }
+
         return true;
     }
 
@@ -363,7 +366,7 @@ public abstract class WorldObject {
         neighbours.clear();
     }
 
-    public List<String> getNeighbourStrings() {
+    public Set<String> getNeighbourStrings() {
         return neighbourStrings;
     }
 
