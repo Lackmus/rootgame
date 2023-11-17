@@ -305,10 +305,7 @@ public abstract class WorldObject {
      * returns `false`.
      */
     public boolean removeNeighbour(WorldObject neighbour) {
-        if (neighbours.remove(neighbour)) {
-            return true;
-        }
-        return false;
+        return neighbours.remove(neighbour);
     }
 
     // clear neighbours
