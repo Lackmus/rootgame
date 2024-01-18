@@ -368,23 +368,25 @@ public class GenerateWorld {
         for (int i = 0; i < maxAttempts; i++) {
             clearFactions(settlementList);
             if (setFactionToSettlementList(settlementList, factionList)) {
-                setCapital(settlementList,factionList);
+                makeCapital(settlementList,factionList);
                 return true;
             }
         }
-
         return false;
     }
 
+   
     /**
-     * The function sets the capital of each faction in a list of settlements based on the number of
-     * neighboring settlements belonging to the same faction.
+     * The function "makeCapital" sets the capital for each faction based on the number of neighboring
+     * settlements belonging to the same faction and only that faction, with the condition that there
+     * are no other factions as neighbors.
      * 
      * @param settlementList A list of WorldObject objects representing different settlements in a
      * world.
-     * @param factionList A list of factions represented as strings.
+     * @param factionList A list of strings representing the factions in the world. The "Neutral"
+     * faction should be ignored.
      */
-    private static void setCapital(List<WorldObject> settlementList, List<String> factionList) {
+    private static void makeCapital(List<WorldObject> settlementList, List<String> factionList) {
         // set capital for each faction based on the number of neighboring settlements belonging to the same faction and only that faction and if possible no other faction as neighbor
         // ignore neutral faction
         for (String faction : factionList) {
@@ -392,20 +394,43 @@ public class GenerateWorld {
                 continue;
             }
             List<WorldObject> factionSettlements = settlementList.stream()
-                    .filter(settlement -> settlement.getFaction().equals(faction))
-                    .collect(Collectors.toList());
+                .filter(settlement -> settlement.getFaction().equals(faction))
+                .collect(Collectors.toList());
             
-            WorldObject capital = factionSettlements.stream()
-                    .max(Comparator.comparingInt(settlement -> settlement.getNeighbours().stream()
-                            .filter(neighbor -> neighbor.getFaction().equals(faction))
-                            .collect(Collectors.toList()).size()))
-                    .orElseThrow( 
-                            () -> new IllegalStateException("No settlement found for faction " + faction)
-                     );
-           
-            capital.setCapital(true);
+            List<WorldObject> factionSettlementsWithNoOtherFactionNeighbor = factionSettlements.stream()
+                .filter(settlement -> settlement.getNeighbours().stream()
+                .filter(neighbor -> !neighbor.getFaction().equals(faction))
+                .collect(Collectors.toList()).isEmpty())
+                .collect(Collectors.toList());
+            
+            if (!factionSettlementsWithNoOtherFactionNeighbor.isEmpty()) {
+                setCapital(factionSettlementsWithNoOtherFactionNeighbor, faction);
+            } else {
+                setCapital(factionSettlements, faction);
+            }
         }
         
+    }
+
+    /**
+     * The function sets the capital of a faction by finding the settlement with the most neighboring
+     * settlements belonging to the same faction.
+     * 
+     * @param factionSettlements A list of WorldObject instances representing settlements.
+     * @param faction The "faction" parameter is a String representing the faction for which we want to
+     * set the capital.
+     */
+    private static void setCapital(List<WorldObject> factionSettlements, String faction) {
+        
+        WorldObject capital = factionSettlements.stream()
+            .max(Comparator.comparingInt(settlement -> settlement.getNeighbours().stream()
+            .filter(neighbor -> neighbor.getFaction().equals(faction))
+            .collect(Collectors.toList()).size()))
+            .orElseThrow( 
+                () -> new IllegalStateException("No settlement found for faction " + faction)
+            );
+        
+        capital.setCapital(true);
     }
 
     /**
@@ -706,7 +731,7 @@ public class GenerateWorld {
      * path's faction is "Neutral" and a random number is less than 0.
      */
     private static void populatePathWithBandit(WorldObject path) {
-        if (path.getFaction() == "Neutral" && Math.random() < 0.5) {
+        if (path.getFaction() == "Neutral" && Math.random() < 0.4) {
             createAndAddNPC(NPCType.BANDIT, path.getFaction(), path);
         }      
     }
