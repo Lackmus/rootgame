@@ -26,7 +26,7 @@ public class World {
     private List<String> factions;     // List of factions
     
     public World (int mapX, int mapY) {
-        settlementNames = LoadedModule.getCityNames();
+        settlementNames = LoadedModule.getSettlementNames();
         factions = LoadedModule.getFactionList();
         listeners = new ArrayList<>();
         this.mapX = mapX;
@@ -35,8 +35,7 @@ public class World {
         
         worldObjectList = new ArrayList<>();
         settlements = new ArrayList<>();
-        paths = new ArrayList<>();   
-        
+        paths = new ArrayList<>();      
     }
 
     /**
@@ -62,8 +61,7 @@ public class World {
     }
 
     /**
-     * This function notifies all listeners of a list update event with the updated list as a
-     * parameter.
+     * This function notifies viewer of a list update event with the updated list as a parameter.
      */
     
     public void notifyListeners(List<WorldObject> list) {
@@ -126,6 +124,9 @@ public class World {
         return false;
     }
 
+    /**
+     * The function sets paths between settlements in a world.
+     */
     private void setPaths() throws Exception {
         System.out.println("Setting Paths...");
         GenerateWorld.setPaths(settlements, paths);
@@ -160,6 +161,7 @@ public class World {
    
 
     public void evolveWorld() {
+        // TODO Auto-generated method stub
         System.out.println("Evolving world...");
         for (int i = 0; i < 1; i++)    {  
             try{  
