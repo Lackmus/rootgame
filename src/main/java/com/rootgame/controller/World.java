@@ -22,11 +22,11 @@ public class World {
     private int mapX;                   // Width of the world
     private int mapY;                   // Height of the world
     
-    private List<String> clearingNames; // List of settlement names
+    private List<String> settlementNames; // List of settlement names
     private List<String> factions;     // List of factions
     
     public World (int mapX, int mapY) {
-        clearingNames = LoadedModule.getCityNames();
+        settlementNames = LoadedModule.getCityNames();
         factions = LoadedModule.getFactionList();
         listeners = new ArrayList<>();
         this.mapX = mapX;
@@ -67,10 +67,12 @@ public class World {
      */
     
     public void notifyListeners(List<WorldObject> list) {
+        System.out.println("Drawing Map...");
         this.worldObjectList = list;
         for (ListUpdateListener listener : listeners) {
           listener.listUpdated(new ListUpdateEvent(this, list));
         }
+        System.out.println("Map drawn.");
     }
 
     /**
@@ -82,22 +84,14 @@ public class World {
         System.out.println("Generating world...");
         int retries = 0;
         try {
-            
-            System.out.println("Setting Neighbours and Factions...");
             do {
                 clearWorld();
                 generateWorldData();    
             } while ((!setNeighbours() || !generateFactions()) && retries++ < 1000);
             
-            System.out.println("Setting Paths...");
             setPaths();
-
-            System.out.println("Populating world...");
             populateWorld();
-
             fillWorldList();
-
-            System.out.println("Drawing Map...");
             notifyListeners(getWorldObjectList());
            
         } catch (Exception e) {
@@ -108,41 +102,59 @@ public class World {
     }
     
     /**
-     * This function generates world data by filling clearings on a map with names at specific
+     * This function generates world data by filling settlements on a map with names at specific
      * coordinates.
      */
     private void generateWorldData() throws Exception {
-        GenerateWorld.fillWorld(settlements, mapX, mapY, clearingNames);
+        System.out.println("Generating World Data...");
+        GenerateWorld.fillWorld(settlements, mapX, mapY, settlementNames);
+        System.out.println("World Data generated.");
     }
     
     /**
-     * This function sets the neighbors of clearings and paths in a generated world.
+     * This function sets the neighbors of settlements and paths in a generated world.
      * 
      * @return A boolean value is being returned.
      */
     private boolean setNeighbours() throws Exception {
-        return GenerateWorld.setNeighbours(settlements);
+        System.out.println("Setting Neighbours...");
+        if (GenerateWorld.setNeighbours(settlements)){
+            System.out.println("Neighbours set.");
+            return true;
+        }
+        System.out.println("Neighbours could not be set.");
+        return false;
     }
 
     private void setPaths() throws Exception {
+        System.out.println("Setting Paths...");
         GenerateWorld.setPaths(settlements, paths);
+        System.out.println("Paths set.");
     }
            
     /**
-     * This function generates factions for a world based on clearings and paths.
+     * This function generates factions for a world based on settlements and paths.
      * 
      * @return A boolean value is being returned.
      */
     private boolean generateFactions() throws Exception {
-        return GenerateWorld.setFactionsToWorld(settlements, paths, factions);
+        System.out.println("Generating Factions...");
+        if (GenerateWorld.generateFactions(settlements, paths, factions)){
+            System.out.println("Factions generated.");
+            return true;
+        }
+        System.out.println("Factions could not be generated.");
+        return false;
     }
     
     /**
-     * This function populates a world with clearings and paths using a helper method called
+     * This function populates a world with settlements and paths using a helper method called
      * "populateWorld".
      */
     private void populateWorld() throws Exception {
+        System.out.println("Populating world...");
         GenerateWorld.populateWorld(settlements, paths);
+        System.out.println("World populated.");
     }
 
    
@@ -181,7 +193,7 @@ public class World {
     }
 
     /**
-     * The function clears the world by removing all objects, clearings, and paths.
+     * The function clears the world by removing all objects, settlements, and paths.
      */
     public void clearWorld() {
         worldObjectList.clear();
@@ -190,7 +202,7 @@ public class World {
     }   
 
     /**
-     * The function adds all clearings and paths to a world object list.
+     * The function adds all settlements and paths to a world object list.
      */
     public void fillWorldList() {
         worldObjectList.addAll(settlements);
@@ -199,14 +211,14 @@ public class World {
     
 
     /**
-     * This Java function returns a Clearing object from a list of Clearing objects based on a given
+     * This Java function returns a settlement object from a list of settlement objects based on a given
      * name.
      * 
-     * @param name A String representing the name of the clearing to be retrieved.
-     * @return The method is returning a Clearing object with the specified name. If no Clearing object
-     * with the specified name is found in the clearings list, the method returns null.
+     * @param name A String representing the name of the settlements to be retrieved.
+     * @return The method is returning a settlement object with the specified name. If no settlement object
+     * with the specified name is found in the settlement list, the method returns null.
      */
-    public WorldObject getClearing (String name) {
+    public WorldObject getSettlement (String name) {
         for (WorldObject settlement : settlements) {
             if (settlement.getName().equals(name)) {
                 return settlement;
@@ -217,11 +229,11 @@ public class World {
 
     
     /**
-     * The function returns a list of Clearing objects.
+     * The function returns a list of settlement objects.
      * 
-     * @return A List of Clearing objects is being returned.
+     * @return A List of settlement objects is being returned.
      */
-    public List<WorldObject> getClearings() {
+    public List<WorldObject> getSettlements() {
         return settlements;
     }
 
@@ -245,13 +257,13 @@ public class World {
     
     /**
      * This is a Java override function that returns a string representation of an object of the World
-     * class, including its clearings.
+     * class, including its settlements.
      * 
      * @return A string representation of an object of the class "World", which includes the value of
-     * the "clearings" field.
+     * the "settlements" field.
      */
     @Override
     public String toString() {
-        return "World{" + "clearings=" + settlements + ", paths=" + paths + "}";
+        return "World{" + "settlements=" + settlements + ", paths=" + paths + "}";
     }    
 }

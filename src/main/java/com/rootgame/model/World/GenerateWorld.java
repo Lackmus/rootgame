@@ -156,10 +156,8 @@ public class GenerateWorld {
      * given list of WorldObjects have been successfully set or not.
      */
     public static boolean setNeighbours(List<WorldObject> settlementList) {
-        System.out.println("Setting neighbours...");
-
-        for (int i = 0; i < settlementList.size(); i++){
-            System.out.println("Attempt " + i);
+        for (int i = 0; i < settlementList.size(); i++){ 
+            System.out.println("Attempt " + i); 
             clearNeighbours(settlementList);
             Collections.shuffle(settlementList);
             setInitialNeighbours(settlementList);
@@ -168,7 +166,6 @@ public class GenerateWorld {
                 return true;
             }
         }
-        
         return false;
     }
 
@@ -204,7 +201,6 @@ public class GenerateWorld {
             }
         }
         if (count3 >= 6 && count4 >= 1) {
-            System.out.println("Neighbours set successfully.");
             return true;
         }
         return false;
@@ -252,7 +248,7 @@ public class GenerateWorld {
     }
     
     /**
-     * This function connects all the settlements in a list by finding the minimum clearing distance
+     * This function connects all the settlements in a list by finding the minimum settlement distance
      * between them.
      * 
      * @param settlementList A list of WorldObject representing settlements that need to be connected.
@@ -366,8 +362,7 @@ public class GenerateWorld {
      * factions.
      * @return The method is returning a boolean value.
      */
-    public static boolean setFactionsToWorld(List<WorldObject> settlementList, List<WorldObject> pathList, List<String> factionList) { 
-        System.out.println("Setting factions...");
+    public static boolean generateFactions(List<WorldObject> settlementList, List<WorldObject> pathList, List<String> factionList) { 
         int maxAttempts = 10;
         
         for (int i = 0; i < maxAttempts; i++) {
@@ -378,7 +373,6 @@ public class GenerateWorld {
             }
         }
 
-        System.out.println("Factions could not be set.");
         return false;
     }
 
@@ -431,8 +425,8 @@ public class GenerateWorld {
      * @param factionList A list of strings representing the different factions in the game, including
      * "Neutral".
      * @return The method is returning a boolean value. It returns true if all the factions have been
-     * successfully assigned to the clearings in the list of settlements, and false if there are not
-     * enough clearings with no faction to assign to a faction.
+     * successfully assigned to the settlements in the list of settlements, and false if there are not
+     * enough settlements with no faction to assign to a faction.
      */
     private static boolean setFactionToSettlementList(List<WorldObject> settlementList, List<String> factionList) {
         List<String> availableFactions = factionList.stream()
@@ -465,14 +459,14 @@ public class GenerateWorld {
      * 
      * @param faction A String representing the faction that will be set to the WorldObjects in the
      * list.
-     * @param clearingsWithNoFaction A List of WorldObject instances that have no faction assigned to
+     * @param settlementsWithNoFaction A List of WorldObject instances that have no faction assigned to
      * them.
-     * @param count The number of clearings in the list that need to have their faction set to the
+     * @param count The number of settlements in the list that need to have their faction set to the
      * specified faction.
      */
-    private static void setFactionToList(String faction, List<WorldObject> clearingsWithNoFaction , int count){
+    private static void setFactionToList(String faction, List<WorldObject> settlementsWithNoFaction , int count){
         for (int i = 0; i < count; i++) {
-            clearingsWithNoFaction.get(i).setFaction(faction);
+            settlementsWithNoFaction.get(i).setFaction(faction);
         }
     }
 
@@ -503,9 +497,9 @@ public class GenerateWorld {
             int currentCount  = 1;
 
             while (!queue.isEmpty()) {
-                WorldObject currentClearing = queue.poll();
+                WorldObject currentSettlement = queue.poll();
 
-                for (WorldObject neighbor : currentClearing.getNeighbours()) {
+                for (WorldObject neighbor : currentSettlement.getNeighbours()) {
 
                     if (neighbor.getFaction() == null && visited.add(neighbor)) {
                         queue.add(neighbor);
@@ -539,7 +533,6 @@ public class GenerateWorld {
                 return false;
             }
         }
-        System.out.println("Factions set successfully.");
         return true;
     } 
 
