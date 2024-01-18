@@ -74,6 +74,18 @@ public class MapPane {
         });
     }
 
+    
+    /**
+     * This function draws a settlement on a map pane, with a larger circle representing the settlement
+     * and a smaller black circle inside representing a capital.
+     * 
+     * @param mapPane The mapPane parameter is a Pane object that represents the container where the
+     * settlement will be drawn. It is used to add the circle shapes representing the settlement to the
+     * mapPane.
+     * @param worldObject An object representing a settlement in the game world. It contains
+     * information such as the settlement's coordinates (x and y), faction, and whether it is a capital
+     * or not. It also has a list of NPCs (non-player characters) associated with the settlement.
+     */
     private static void drawSettlement(Pane mapPane, WorldObject worldObject) {       
 
         int x = worldObject.getX();
@@ -87,12 +99,35 @@ public class MapPane {
         */
 
         Circle circle = drawCircle(mapPane, x, y, color,10);
+        // if is capital draw a black circle inside
+        if (worldObject.hasType(WorldObjectType.SETTLEMENT) && worldObject.isCapital()) {
+            Circle innerCircle = drawCircle(mapPane, x, y, Color.BLACK, 5);
+            innerCircle.setMouseTransparent(true);
+        }
+        
+        
         circle.setOnMouseClicked(event -> showSettlementInfo(worldObject));
         circle.setOnMouseEntered(event -> {
             handleMouseEntered(circle, x, y, mapPane, worldObject);
         }); 
     }
 
+    /**
+     * The function handles the mouse entering a circle by increasing its radius, changing its color,
+     * and displaying a text container above it, and handles the mouse exiting the circle by removing
+     * the text container and restoring the circle's original properties.
+     * 
+     * @param circle The circle parameter is an instance of the Circle class, which represents a circle
+     * shape in JavaFX. It is used to visually represent an object on a map.
+     * @param x The x-coordinate of the mouse pointer when it enters the circle.
+     * @param y The parameter "y" in the handleMouseEntered method represents the y-coordinate of the
+     * mouse pointer when it enters the circle.
+     * @param mapPane The mapPane parameter is a Pane object that represents the container where the
+     * circles and text containers are displayed.
+     * @param worldObject The `worldObject` parameter is an object that represents a world entity. It
+     * likely contains information such as the name of the object, its position, and other relevant
+     * data.
+     */
     private static void handleMouseEntered(Circle circle, double x, double y, Pane mapPane, WorldObject worldObject) {
         Text text = new Text(worldObject.getName());
         double textWidth = text.getLayoutBounds().getWidth();
@@ -123,6 +158,16 @@ public class MapPane {
         });
     }
 
+    /**
+     * The function adjusts the position of a container within a map pane to ensure it is fully
+     * visible.
+     * 
+     * @param mapPane The mapPane parameter is a Pane object that represents the container where the
+     * map is displayed. It is used to determine the dimensions of the mapPane and to compare them with
+     * the dimensions of the container.
+     * @param container The container is a StackPane that holds the content that needs to be adjusted
+     * within the mapPane.
+     */
     private static void adjustContainer(Pane mapPane, StackPane container){
         Boolean isLeft = false;
         Boolean isRight = false;
@@ -148,6 +193,19 @@ public class MapPane {
         }
     }
 
+    /**
+     * The function "drawCircle" creates a circle with the specified center coordinates, color, and
+     * radius, adds it to a pane, and returns the circle object.
+     * 
+     * @param mapPane The mapPane parameter is a Pane object that represents the container where the
+     * circle will be drawn.
+     * @param centerX The x-coordinate of the center of the circle.
+     * @param centerY The centerY parameter represents the y-coordinate of the center of the circle.
+     * @param color The "color" parameter is of type Color and represents the fill color of the circle.
+     * @param radius The radius parameter is the length of the line segment from the center of the
+     * circle to any point on its circumference.
+     * @return The method is returning a Circle object.
+     */
     private static Circle drawCircle(Pane mapPane, double centerX, double centerY, Color color, double radius) {
         Circle circle = new Circle(centerX, centerY, radius);
         circle.setFill(color);
@@ -155,6 +213,12 @@ public class MapPane {
         return circle;
     }
 
+    /**
+     * The function creates a JavaFX stage that displays information about a WorldObject, including its
+     * distance, faction, and a dropdown menu of NPCs.
+     * 
+     * @param worldObject The `worldObject` parameter is an instance of the `WorldObject` class.
+     */
     private static void showPathInfo(WorldObject worldObject) {
         Stage stage = new Stage();
         stage.setTitle("Path");
@@ -180,6 +244,14 @@ public class MapPane {
         stage.show();
     }
 
+    /**
+     * The function "showSettlementInfo" creates a GUI window to display information about a world
+     * object, including its name, faction, NPCs, neighbors, and description.
+     * 
+     * @param worldObject The `worldObject` parameter is an instance of the `WorldObject` class. It
+     * represents a settlement in the world and contains information such as its name, faction, NPCs
+     * (non-player characters) present in the settlement, and its neighbors (other settlements nearby).
+     */
     private static void showSettlementInfo(WorldObject worldObject) {
         Stage stage = new Stage();
         stage.setTitle("Settlement");

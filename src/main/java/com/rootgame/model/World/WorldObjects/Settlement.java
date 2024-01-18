@@ -6,6 +6,8 @@ public class Settlement extends WorldObject {
     private final int MAX_MARKEVALUE = MAX_POPULATION - 10;
     private final int MAX_COMBATSTRENGTH = MAX_POPULATION - 5;
     private final int MAX_LOYALTY = 100;
+    private boolean isCapital;
+
 
     public Settlement(WorldObjectType type, String name, int x, int y) {
         super(type, name, x, y);
@@ -14,6 +16,15 @@ public class Settlement extends WorldObject {
         loyalty = (int) (Math.random() * MAX_LOYALTY);
         currentPopulation = MAX_POPULATION;
         siegeTimer = (int)combatStrength/5;
+        isCapital = false;
+    }
+
+    public boolean isCapital() {
+        return isCapital;
+    }
+
+    public void setCapital(boolean isCapital) {
+        this.isCapital = isCapital;
     }
 
     @Override

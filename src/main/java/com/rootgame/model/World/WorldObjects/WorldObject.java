@@ -311,6 +311,7 @@ public abstract class WorldObject {
     // clear neighbours
     public void clearNeighbours() {
         neighbours.clear();
+        neighbourStrings.clear();
     }
 
     /*

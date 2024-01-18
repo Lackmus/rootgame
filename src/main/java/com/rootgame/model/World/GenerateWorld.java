@@ -357,13 +357,13 @@ public class GenerateWorld {
      *************************************************************************************************************************************************************/
     
     /**
-     * This function sets factions to a list of world objects and returns true if successful, false
-     * otherwise.
+     * The function attempts to set factions to a list of settlement objects and returns true if
+     * successful, otherwise false.
      * 
-     * @param settlementList A list of WorldObject instances representing settlementList in a game world.
-     * @param pathList A list of WorldObjects representing paths in a game world.
-     * @param factionList A list of strings representing the factions that need to be set to the
-     * WorldObjects.
+     * @param settlementList A list of WorldObject representing the settlements in the world.
+     * @param pathList The `pathList` parameter is a list of `WorldObject` objects.
+     * @param factionList The factionList parameter is a List of Strings that contains the names of the
+     * factions.
      * @return The method is returning a boolean value.
      */
     public static boolean setFactionsToWorld(List<WorldObject> settlementList, List<WorldObject> pathList, List<String> factionList) { 
@@ -373,12 +373,45 @@ public class GenerateWorld {
         for (int i = 0; i < maxAttempts; i++) {
             clearFactions(settlementList);
             if (setFactionToSettlementList(settlementList, factionList)) {
+                setCapital(settlementList,factionList);
                 return true;
             }
         }
 
         System.out.println("Factions could not be set.");
         return false;
+    }
+
+    /**
+     * The function sets the capital of each faction in a list of settlements based on the number of
+     * neighboring settlements belonging to the same faction.
+     * 
+     * @param settlementList A list of WorldObject objects representing different settlements in a
+     * world.
+     * @param factionList A list of factions represented as strings.
+     */
+    private static void setCapital(List<WorldObject> settlementList, List<String> factionList) {
+        // set capital for each faction based on the number of neighboring settlements belonging to the same faction and only that faction and if possible no other faction as neighbor
+        // ignore neutral faction
+        for (String faction : factionList) {
+            if (faction.equals("Neutral")) {
+                continue;
+            }
+            List<WorldObject> factionSettlements = settlementList.stream()
+                    .filter(settlement -> settlement.getFaction().equals(faction))
+                    .collect(Collectors.toList());
+            
+            WorldObject capital = factionSettlements.stream()
+                    .max(Comparator.comparingInt(settlement -> settlement.getNeighbours().stream()
+                            .filter(neighbor -> neighbor.getFaction().equals(faction))
+                            .collect(Collectors.toList()).size()))
+                    .orElseThrow( 
+                            () -> new IllegalStateException("No settlement found for faction " + faction)
+                     );
+           
+            capital.setCapital(true);
+        }
+        
     }
 
     /**
@@ -391,7 +424,7 @@ public class GenerateWorld {
     }
 
     /**
-     * This function sets factions to clearing lists based on the number of settlementList and factions
+     * This function sets factions to settlement lists based on the number of settlementList and factions
      * provided.
      * 
      * @param settlementList A list of WorldObject representing settlementList in a game.
