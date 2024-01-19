@@ -47,6 +47,17 @@ public class MapPane {
         }
     }
 
+    /**
+     * The function `drawPath` draws a line and a circle on a map pane, representing a path between two
+     * points, and assigns event handlers to the circle.
+     * 
+     * @param mapPane The `mapPane` parameter is a `Pane` object that represents the container where
+     * the map is displayed. It is used to add the line and circle objects to the map for visualization
+     * purposes.
+     * @param worldObject The `worldObject` parameter is an instance of the `WorldObject` class. It
+     * represents an object in the world and contains information such as its position (x, y),
+     * neighbors, faction, and NPCs associated with it.
+     */
     private static void drawPath(Pane mapPane, WorldObject worldObject) {
         int[] start = {worldObject.getNeighbours().get(0).getX(), worldObject.getNeighbours().get(0).getY() };
         int[] end = {worldObject.getNeighbours().get(1).getX(), worldObject.getNeighbours().get(1).getY() };
@@ -54,7 +65,6 @@ public class MapPane {
         int x = worldObject.getX();
         int y = worldObject.getY();
         Color color = LoadedModule.getFactionColor(worldObject.getFaction());
-
         /* 
         if ( worldObject.getNPCs().stream().anyMatch(npc -> npc.getType().equals(NPCType.CARAVAN))) {
             color = Color.BLACK;
@@ -91,20 +101,17 @@ public class MapPane {
         int x = worldObject.getX();
         int y = worldObject.getY();
         Color color = LoadedModule.getFactionColor(worldObject.getFaction());
-
         /*
         if ( worldObject.getNPCs().stream().anyMatch(npc -> npc.getType().equals(NPCType.CARAVAN))) {
             color = Color.BLACK;
         }
         */
-
         Circle circle = drawCircle(mapPane, x, y, color,10);
-        // if is capital draw a black circle inside
+
         if (worldObject.hasType(WorldObjectType.SETTLEMENT) && worldObject.isCapital()) {
             Circle innerCircle = drawCircle(mapPane, x, y, Color.BLACK, 5);
             innerCircle.setMouseTransparent(true);
         }
-        
         
         circle.setOnMouseClicked(event -> showSettlementInfo(worldObject));
         circle.setOnMouseEntered(event -> {
@@ -131,10 +138,8 @@ public class MapPane {
     private static void handleMouseEntered(Circle circle, double x, double y, Pane mapPane, WorldObject worldObject) {
         Text text = new Text(worldObject.getName());
         double textWidth = text.getLayoutBounds().getWidth();
-        // get circle color
         Color color = (Color) circle.getFill();
         
-        // change circle radius and color only when mouse is over the circle
         circle.setRadius(circle.getRadius() + 2);
         circle.setFill(Color.WHITE);
         circle.setStroke(color);
@@ -336,3 +341,5 @@ public class MapPane {
                 stage.setHeight(200);
             }
         });*/
+
+

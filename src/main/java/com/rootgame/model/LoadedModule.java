@@ -26,7 +26,7 @@ public class LoadedModule {
     private static Map<String, List<List<String>>> raceNameMap = new HashMap<>();
     private static List<String> cityNames = new ArrayList<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(LoadedModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoadedModule.class); // Logger object to log messages to the console and a file called "rootgame.log"
 
     private LoadedModule (){} // Private constructor to prevent instantiation
     
