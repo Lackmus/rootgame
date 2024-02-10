@@ -211,7 +211,6 @@ public class World {
         worldObjectList.addAll(paths);
     }
     
-
     /**
      * This Java function returns a settlement object from a list of settlement objects based on a given
      * name.
@@ -229,7 +228,6 @@ public class World {
         return null;
     }
 
-    
     /**
      * The function returns a list of settlement objects.
      * 

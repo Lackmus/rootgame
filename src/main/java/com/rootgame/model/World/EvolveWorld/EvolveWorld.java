@@ -52,29 +52,20 @@ public class EvolveWorld {
         npc.setMoved(true);
     }
 
-          
+    private static void evolveWorldObjects() {
+        //TODO 
+    }
 
-//    private static void evolveWorldObjects() {}
+    private static void evolveWorldObject(WorldObject worldObject) {
+        //TODO
+    }
 
-//    
-
-//    private static void evolveFactions() {}
-
-//    private static void evolveClearings() {}
-
-//    private static void evolvePaths() {}
-
-//    private static void evolveWorldObject(WorldObject worldObject) {}
-
-//    
-
-//    private static void makeDestinationPath(WorldObject worldObject) {}
-
-//    private static void evolveFaction(String faction) {}
-
-//    private static void evolveClearing(Settlement clearing) {}
-
-//    private static void evolvePath(Path path) {}
-
+    private static void evolveFactions() {
+        //TODO
+    }
+   
+    private static void evolveFaction(String faction) {
+        //TODO
+    }
     
 }
