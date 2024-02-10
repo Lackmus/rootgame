@@ -2,6 +2,7 @@ package com.rootgame.model.NPC;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.rootgame.model.LoadedModule;
 import com.rootgame.model.World.WorldObjects.WorldObject;
@@ -24,12 +25,15 @@ public class NPCFactory {
      * @return The method is returning an instance of the NPC class.
      */
     public static NPC createNPC(NPCType npcType, String faction, WorldObject worldObject) {
+        final int MAX_LOYALTY = 100;
         String name;
         String animal;
-        int loyalty = (int) (Math.random() * 100);
+        //int loyalty = (int) (Math.random() * 100);
+        Random random = new Random();
+        int loyalty = random.nextInt(MAX_LOYALTY);
         switch (npcType) {
             case CIVILIAN: case TRADER: case CARAVAN:
-                if (faction != "Neutral" && Math.random() > 0.5)
+                if (!"Neutral".equals(faction) && random.nextDouble() > 0.5)
                     faction = "Neutral";
                 break;
             case BANDIT: case MERCENARY:
@@ -38,7 +42,9 @@ public class NPCFactory {
             default:  
                 break;
         }
-        animal = factionRaceMap.get(faction).get((int) (Math.random() * LoadedModule.getFactionRaceMap().get(faction).size()));
+        //animal = factionRaceMap.get(faction).get((int) (Math.random() * LoadedModule.getFactionRaceMap().get(faction).size()));
+        int factionCount = LoadedModule.getFactionRaceMap().get(faction).size();
+        animal = factionRaceMap.get(faction).get(random.nextInt(factionCount));
         name = getRandomName(animal);
         NPC npc = new NPC(name, animal, npcType, faction, worldObject);
         npc.setLoyalty(loyalty);
