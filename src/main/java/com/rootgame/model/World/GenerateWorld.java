@@ -22,6 +22,11 @@ import com.rootgame.model.World.WorldObjects.WorldObjectFactory;
 
 public class GenerateWorld {
     private final static String NEUTRAL = "Neutral";
+    private final static Random random = new Random();
+
+    private GenerateWorld() {
+        throw new IllegalStateException("Utility class");
+    }
     /************************
      * World Generation API *
      ************************/
@@ -52,7 +57,6 @@ public class GenerateWorld {
         int firstHalfY = mapHeight / 2;
         int quarter = (numSettlements + 3) / 4;
         
-        Random random = new Random();
         int minDistance = 100; // Minimum distance between settlements
     
         for (int i = 0; i < numSettlements; i++) {
@@ -367,15 +371,13 @@ public class GenerateWorld {
         
         for (int i = 0; i < maxAttempts; i++) {
             clearFactions(settlementList);
-            if (setFactionToSettlementList(settlementList, factionList)) {
+            if (assignFactions(settlementList, factionList)) {
                 setCapital(settlementList,factionList);
                 return true;
             }
         }
         return false;
     }
-
-   
     
     /**
      * The function clears the faction of all WorldObjects in a given list.
@@ -397,7 +399,7 @@ public class GenerateWorld {
      * successfully assigned to the settlements in the list of settlements, and false if there are not
      * enough settlements with no faction to assign to a faction.
      */
-    private static boolean setFactionToSettlementList(List<WorldObject> settlementList, List<String> factionList) {
+    private static boolean assignFactions(List<WorldObject> settlementList, List<String> factionList) {
         List<String> availableFactions = factionList.stream()
             .filter(faction -> !faction.equals(NEUTRAL))
             .collect(Collectors.toList());
@@ -412,14 +414,14 @@ public class GenerateWorld {
         factionMap.put(availableFactions.get(availableFactions.size() - 1), remainingSettlements); 
 
         for (Map.Entry<String, Integer> entry : factionMap.entrySet()) {
-            List<WorldObject> settlementsWithNoFaction = getWayWithNoFaction(settlementList, entry.getValue()); // 
+            List<WorldObject> settlementsWithNoFaction = getSettlementsWithoutFaction(settlementList, entry.getValue()); // 
             if (settlementsWithNoFaction == null) {
                 return false;
             } else {
-                setFactionToList(entry.getKey(), settlementsWithNoFaction , entry.getValue());
+                assignFactionToWorldObjects(entry.getKey(), settlementsWithNoFaction , entry.getValue());
             }
         }
-        return checkFactions(settlementList);
+        return checkFactionConsistency(settlementList);
     } 
 
     /**
@@ -433,9 +435,9 @@ public class GenerateWorld {
      * @param count The number of settlements in the list that need to have their faction set to the
      * specified faction.
      */
-    private static void setFactionToList(String faction, List<WorldObject> settlementsWithNoFaction , int count){
+    private static void assignFactionToWorldObjects(String faction, List<WorldObject> settlementsWithoutFaction , int count){
         for (int i = 0; i < count; i++) {
-            settlementsWithNoFaction.get(i).setFaction(faction);
+            settlementsWithoutFaction.get(i).setFaction(faction);
         }
     }
 
@@ -449,19 +451,19 @@ public class GenerateWorld {
      * other through a chain of neighboring WorldObjects. The size of the list is determined by the
      * "count" parameter passed to the method. If no such list can be found, the method returns null.
      */
-    private static List<WorldObject> getWayWithNoFaction( List <WorldObject> settlementList, int count) {
-        List<WorldObject> listWithNoFaction = settlementList.stream()
+    private static List<WorldObject> getSettlementsWithoutFaction( List <WorldObject> settlementList, int count) {
+        List<WorldObject> settlementsWithoutFaction = settlementList.stream()
                 .filter(c -> c.getFaction() == null)
                 .collect(Collectors.toList());
 
-        Collections.shuffle(listWithNoFaction);
+        Collections.shuffle(settlementsWithoutFaction);
 
-        for (WorldObject settlementWithNoFaction : listWithNoFaction) { 
+        for (WorldObject settlementWithoutFaction : settlementsWithoutFaction) { 
             Queue<WorldObject> queue = new LinkedList<>();
             Set<WorldObject> visited = new HashSet<>();  
 
-            queue.add(settlementWithNoFaction);
-            visited.add(settlementWithNoFaction);
+            queue.add(settlementWithoutFaction);
+            visited.add(settlementWithoutFaction);
 
             int currentCount  = 1;
 
@@ -490,7 +492,7 @@ public class GenerateWorld {
      * @param settlementList a list of WorldObject instances representing settlementList in a game world.
      * @return A boolean value is being returned.
      */
-    public static boolean checkFactions(List<WorldObject> settlementList) {
+    public static boolean checkFactionConsistency(List<WorldObject> settlementList) {
         Set<String> factionSet = new HashSet<>();
         for (WorldObject settlement : settlementList) {
             factionSet.add(settlement.getFaction());
@@ -749,7 +751,7 @@ public class GenerateWorld {
             } else if (i <= NUM_NPC - NUM_TRADESMEN) {
                 type = NPCType.TRADER;
             } else {
-                double randomValue = Math.random();
+                double randomValue = random.nextInt();
                 type = randomValue < 0.8 ? NPCType.MERCENARY : NPCType.BANDIT;
             }
     
@@ -769,7 +771,7 @@ public class GenerateWorld {
      * path's faction is "Neutral" and a random number is less than 0.
      */
     private static void populatePathWithBandit(WorldObject path) {
-        if (path.getFaction() == NEUTRAL && Math.random() < 0.4) {
+        if (path.getFaction() == NEUTRAL && random.nextInt() < 0.4) {
             createAndAddNPC(NPCType.BANDIT, path.getFaction(), path);
         }      
     }

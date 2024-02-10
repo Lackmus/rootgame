@@ -11,6 +11,7 @@ public class NPCFactory {
 
     private static Map<String, List<List<String>>> raceNameMap = LoadedModule.getRaceNameMap();
     private static Map<String, List<String>> factionRaceMap = LoadedModule.getFactionRaceMap();
+    private final static String NEUTRAL = "Neutral";
 
     private NPCFactory() {
     }
@@ -33,11 +34,11 @@ public class NPCFactory {
         int loyalty = random.nextInt(MAX_LOYALTY);
         switch (npcType) {
             case CIVILIAN: case TRADER: case CARAVAN:
-                if (!"Neutral".equals(faction) && random.nextDouble() > 0.5)
-                    faction = "Neutral";
+                if (!NEUTRAL.equals(faction) && random.nextDouble() > 0.5)
+                    faction = NEUTRAL;
                 break;
             case BANDIT: case MERCENARY:
-                faction = "Neutral";
+                faction = NEUTRAL;
                 break;
             default:  
                 break;
