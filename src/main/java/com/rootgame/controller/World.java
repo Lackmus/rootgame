@@ -6,8 +6,8 @@ import java.util.List;
 import com.rootgame.controller.MyObservable.ListUpdateEvent;
 import com.rootgame.controller.MyObservable.ListUpdateListener;
 import com.rootgame.model.LoadedModule;
-import com.rootgame.model.World.EvolveWorld;
 import com.rootgame.model.World.GenerateWorld;
+import com.rootgame.model.World.EvolveWorld.EvolveWorld;
 import com.rootgame.model.World.WorldObjects.WorldObject;
 
 

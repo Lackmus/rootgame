@@ -21,7 +21,7 @@ import com.rootgame.model.World.WorldObjects.WorldObject;
 import com.rootgame.model.World.WorldObjects.WorldObjectFactory;
 
 public class GenerateWorld {
-
+    private final static String NEUTRAL = "Neutral";
     /************************
      * World Generation API *
      ************************/
@@ -368,7 +368,7 @@ public class GenerateWorld {
         for (int i = 0; i < maxAttempts; i++) {
             clearFactions(settlementList);
             if (setFactionToSettlementList(settlementList, factionList)) {
-                makeCapital(settlementList,factionList);
+                setCapital(settlementList,factionList);
                 return true;
             }
         }
@@ -376,63 +376,7 @@ public class GenerateWorld {
     }
 
    
-    /**
-     * The function "makeCapital" sets the capital for each faction based on the number of neighboring
-     * settlements belonging to the same faction and only that faction, with the condition that there
-     * are no other factions as neighbors.
-     * 
-     * @param settlementList A list of WorldObject objects representing different settlements in a
-     * world.
-     * @param factionList A list of strings representing the factions in the world. The "Neutral"
-     * faction should be ignored.
-     */
-    private static void makeCapital(List<WorldObject> settlementList, List<String> factionList) {
-        // set capital for each faction based on the number of neighboring settlements belonging to the same faction and only that faction and if possible no other faction as neighbor
-        // ignore neutral faction
-        for (String faction : factionList) {
-            if (faction.equals("Neutral")) {
-                continue;
-            }
-            List<WorldObject> factionSettlements = settlementList.stream()
-                .filter(settlement -> settlement.getFaction().equals(faction))
-                .collect(Collectors.toList());
-            
-            List<WorldObject> factionSettlementsWithNoOtherFactionNeighbor = factionSettlements.stream()
-                .filter(settlement -> settlement.getNeighbours().stream()
-                .filter(neighbor -> !neighbor.getFaction().equals(faction))
-                .collect(Collectors.toList()).isEmpty())
-                .collect(Collectors.toList());
-            
-            if (!factionSettlementsWithNoOtherFactionNeighbor.isEmpty()) {
-                setCapital(factionSettlementsWithNoOtherFactionNeighbor, faction);
-            } else {
-                setCapital(factionSettlements, faction);
-            }
-        }
-        
-    }
-
-    /**
-     * The function sets the capital of a faction by finding the settlement with the most neighboring
-     * settlements belonging to the same faction.
-     * 
-     * @param factionSettlements A list of WorldObject instances representing settlements.
-     * @param faction The "faction" parameter is a String representing the faction for which we want to
-     * set the capital.
-     */
-    private static void setCapital(List<WorldObject> factionSettlements, String faction) {
-        
-        WorldObject capital = factionSettlements.stream()
-            .max(Comparator.comparingInt(settlement -> settlement.getNeighbours().stream()
-            .filter(neighbor -> neighbor.getFaction().equals(faction))
-            .collect(Collectors.toList()).size()))
-            .orElseThrow( 
-                () -> new IllegalStateException("No settlement found for faction " + faction)
-            );
-        
-        capital.setCapital(true);
-    }
-
+    
     /**
      * The function clears the faction of all WorldObjects in a given list.
      * 
@@ -455,7 +399,7 @@ public class GenerateWorld {
      */
     private static boolean setFactionToSettlementList(List<WorldObject> settlementList, List<String> factionList) {
         List<String> availableFactions = factionList.stream()
-            .filter(faction -> !faction.equals("Neutral"))
+            .filter(faction -> !faction.equals(NEUTRAL))
             .collect(Collectors.toList());
 
         int settlementsPerFaction = settlementList.size() / availableFactions.size(); 
@@ -575,9 +519,7 @@ public class GenerateWorld {
         int borderSettlementCount = 0;
         int matchingNeighborCount = 0;
 
-        List<WorldObject> factionSettlements = settlementList.stream()
-                .filter(settlement -> settlement.getFaction().equals(faction))
-                .collect(Collectors.toList());
+        List<WorldObject> factionSettlements = getFactionSettlements(settlementList,faction);
     
         for (WorldObject settlement : factionSettlements) {
             for (WorldObject neighbor : settlement.getNeighbours()) {
@@ -591,6 +533,102 @@ public class GenerateWorld {
 
         return borderSettlementCount > 1;
     }
+
+    /**
+     * The function takes a list of WorldObjects and a faction name as input, and returns a new list
+     * containing only the settlements that belong to the specified faction.
+     * 
+     * @param settlementList A list of WorldObject objects representing settlements.
+     * @param faction The faction parameter is a String representing the faction name.
+     * @return The method is returning a list of WorldObject instances that belong to a specific
+     * faction.
+     */
+    private static List<WorldObject> getFactionSettlements(List<WorldObject> settlementList, String faction) {
+        return settlementList.stream()
+            .filter(settlement -> settlement.getFaction().equals(faction))
+            .collect(Collectors.toList());
+    }
+
+    /****************
+     * set Capitals *
+     *************************************************************************************************************************************************************/
+
+    /**
+     * The function "setCapital" sets the capital for each faction based on the number of neighboring
+     * settlements belonging to the same faction and only that faction, with the condition that there
+     * are no other factions as neighbors.
+     * 
+     * @param settlementList A list of WorldObject objects representing different settlements in a
+     * world.
+     * @param factionList A list of strings representing the factions in the world. The "Neutral"
+     * faction should be ignored.
+     */
+    private static void setCapital(List<WorldObject> settlementList, List<String> factionList) {
+        // set capital for each faction based on the number of neighboring settlements belonging to the same faction and only that faction and if possible no other faction as neighbor
+        // ignore neutral faction
+        
+        for (String faction : factionList) {
+            WorldObject capital;
+            if (faction.equals(NEUTRAL)) {
+                continue;
+            }
+            List<WorldObject> factionSettlements = getFactionSettlements(settlementList,faction);
+            List<WorldObject> suitableSettlements = getSuitableCapitals(factionSettlements);
+            
+            if (!suitableSettlements.isEmpty()) {
+                capital = findCapital(suitableSettlements);
+            } else {
+                capital = findCapital(factionSettlements);   
+            }
+            capital.setCapital(true);
+        }
+        
+    }
+
+    /**
+     * The function "getSuitableCapitals" returns a list of WorldObjects that are suitable to be
+     * capitals based on a given list of faction settlements.
+     * 
+     * @param factionSettlements A list of WorldObject representing the settlements of a faction.
+     * @return The method is returning a List of WorldObject objects that are suitable capitals.
+     */
+    private static List<WorldObject> getSuitableCapitals(List<WorldObject> factionSettlements) {
+        return factionSettlements.stream()
+            .filter(settlement -> isSuitableCapital(settlement, factionSettlements))
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * The function checks if a settlement has no neighboring settlements belonging to a different
+     * faction.
+     * 
+     * @param settlement The "settlement" parameter is an object representing a specific settlement in
+     * a world. It likely contains information such as the faction that owns the settlement, its
+     * neighbors, and other relevant data.
+     * @param factionSettlements The `factionSettlements` parameter is a list of `WorldObject`
+     * representing all the settlements belonging to the same faction as the `settlement` parameter.
+     * @return The method is returning a boolean value.
+     */
+    private static boolean isSuitableCapital(WorldObject settlement, List<WorldObject> factionSettlements) {
+        return settlement.getNeighbours().stream()
+            .filter(neighbor -> !neighbor.getFaction().equals(settlement.getFaction()))
+            .count() == 0;
+    }
+
+    /**
+     * The function finds the settlement with the most neighbors from a given list and returns it as
+     * the capital.
+     * 
+     * @param suitableSettlements A list of WorldObject instances representing suitable settlements.
+     * @return The method is returning a WorldObject, which represents a suitable settlement that can
+     * be designated as a capital.
+     */
+    private static WorldObject findCapital(List<WorldObject> suitableSettlements) {
+        return suitableSettlements.stream()
+            .max(Comparator.comparingInt(settlement -> settlement.getNeighbours().size()))
+            .orElseThrow(() -> new IllegalStateException("No suitable settlement found for a capital"));
+    }
+
 
      /************
      * add Paths *
@@ -652,7 +690,7 @@ public class GenerateWorld {
                 path.setFaction(path.getNeighbours().get(0).getFaction());
             }
             else {
-                path.setFaction("Neutral");
+                path.setFaction(NEUTRAL);
             }
         }
     }
@@ -731,7 +769,7 @@ public class GenerateWorld {
      * path's faction is "Neutral" and a random number is less than 0.
      */
     private static void populatePathWithBandit(WorldObject path) {
-        if (path.getFaction() == "Neutral" && Math.random() < 0.4) {
+        if (path.getFaction() == NEUTRAL && Math.random() < 0.4) {
             createAndAddNPC(NPCType.BANDIT, path.getFaction(), path);
         }      
     }
