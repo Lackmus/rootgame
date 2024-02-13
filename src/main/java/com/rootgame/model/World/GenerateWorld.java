@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import com.rootgame.model.NPC.NPC;
 import com.rootgame.model.NPC.NPCFactory;
 import com.rootgame.model.NPC.NPCType;
 import com.rootgame.model.World.WorldObjects.WorldObjectType;
@@ -708,22 +709,26 @@ public class GenerateWorld {
      * @param settlementList A list of WorldObject instances representing settlementList in a game world.
      * @param pathList A list of WorldObjects representing paths in a game world.
      */
-    public static void populateWorld(List<WorldObject> settlementList, List<WorldObject> pathList) {
+    public static void populateWorld(List<WorldObject> settlementList, 
+                                    List<WorldObject> pathList,
+                                    Map<String, List<List<String>>> raceNameMap,
+                                    Map<String, List<String>> factionRaceMap,
+                                    List<NPC> npcList){
         for (WorldObject settlement : settlementList) {
-            populateSettlement(settlement);
+            populateSettlement(settlement, raceNameMap, factionRaceMap,npcList);
         }
 
         Collections.shuffle(settlementList);
         int caravanCount = 3;
         for (WorldObject settlement : settlementList) {
             if (caravanCount > 0) {
-                createAndAddNPC(NPCType.CARAVAN, settlement.getFaction(), settlement);
+                createAndAddNPC(NPCType.CARAVAN, settlement.getFaction(), settlement, raceNameMap, factionRaceMap,npcList);
                 caravanCount--;
             }
         }
 
         for (WorldObject path : pathList) {
-            populatePathWithBandit(path);
+            populatePathWithBandit(path, raceNameMap, factionRaceMap,npcList);
         }
     }
     
@@ -733,13 +738,16 @@ public class GenerateWorld {
      * 
      * @param settlement A WorldObject representing a settlement in the game.
      */
-    private static void populateSettlement(WorldObject settlement) {
+    private static void populateSettlement(WorldObject settlement,
+                                        Map<String, List<List<String>>> raceNameMap,
+                                        Map<String, List<String>> factionRaceMap,
+                                        List<NPC> npcList) {
         final int NUM_NPC = 10;
         final int NUM_SOLDIERS = 3;
         final int NUM_CIVILIANS = 3;
         final int NUM_TRADESMEN = 2;
     
-        createAndAddNPC(NPCType.LEADER, settlement.getFaction(), settlement);
+        createAndAddNPC(NPCType.LEADER, settlement.getFaction(), settlement, raceNameMap, factionRaceMap,npcList);
     
         for (int i = 0; i < NUM_NPC; i++) {
             NPCType type;
@@ -751,17 +759,21 @@ public class GenerateWorld {
             } else if (i <= NUM_NPC - NUM_TRADESMEN) {
                 type = NPCType.TRADER;
             } else {
-                double randomValue = random.nextInt();
+                double randomValue = random.nextDouble();
                 type = randomValue < 0.8 ? NPCType.MERCENARY : NPCType.BANDIT;
             }
     
-            createAndAddNPC(type, settlement.getFaction(), settlement);
+            createAndAddNPC(type, settlement.getFaction(), settlement, raceNameMap, factionRaceMap,npcList);
         }
     }
 
-    private static void createAndAddNPC(NPCType type, String faction, WorldObject settlement) {
-        NPCFactory npcFactory = new NPCFactory();
-        settlement.addNPC(npcFactory.createNPC(type, faction, settlement));
+    private static void createAndAddNPC(NPCType type, String faction, WorldObject settlement,
+                                        Map<String, List<List<String>>> raceNameMap,
+                                        Map<String, List<String>> factionRaceMap,
+                                        List<NPC> npcList) {
+        NPC npc = NPCFactory.createNPC(type, faction, settlement, raceNameMap, factionRaceMap);
+        settlement.addNPC(npc);
+        npcList.add(npc);
     }
 
     /**
@@ -771,9 +783,12 @@ public class GenerateWorld {
      * area in the game world. The method "populatePathWithBandit" adds a Bandit NPC to the path if the
      * path's faction is "Neutral" and a random number is less than 0.
      */
-    private static void populatePathWithBandit(WorldObject path) {
+    private static void populatePathWithBandit(WorldObject path, 
+                                            Map<String, List<List<String>>> raceNameMap,
+                                            Map<String, List<String>> factionRaceMap,
+                                            List<NPC> npcList) {
         if (path.getFaction() == NEUTRAL && random.nextInt() < 0.4) {
-            createAndAddNPC(NPCType.BANDIT, path.getFaction(), path);
+            createAndAddNPC(NPCType.BANDIT, path.getFaction(), path, raceNameMap, factionRaceMap,npcList);
         }      
     }
 }    

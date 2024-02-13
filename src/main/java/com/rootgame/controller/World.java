@@ -22,7 +22,7 @@ public class World {
     private List<WorldObject> settlements;   // List of settlement objects
     private List<WorldObject> paths;           // List of Path objects
     private List<Faction> factions;
-    private List<NPC> npcs;
+    private List<NPC> npcList;
 
     private int mapX;                   // Width of the world
     private int mapY;                   // Height of the world
@@ -31,6 +31,9 @@ public class World {
     private List<String> factionNames; 
     private Map<String, List<List<String>>> raceNameMap;
     private Map<String, List<String>> factionRaceMap;    // List of factions
+
+    private static final int MAX_RETRIES = 1000;
+
     
     public World (int mapX, int mapY) {
         loadModule();
@@ -42,12 +45,13 @@ public class World {
         worldObjectList = new ArrayList<>();
         settlements = new ArrayList<>();
         paths = new ArrayList<>();    
-        factions =  new ArrayList<>();
+        factions = new ArrayList<>();
+        npcList = new ArrayList<>();
     }
 
     private void loadModule(){
         settlementNames = LoadedModule.getSettlementNames();
-        factionNames = LoadedModule.getFactionList();
+        factionNames = LoadedModule.getFactionNames();
         raceNameMap = LoadedModule.getRaceNameMap();
         factionRaceMap = LoadedModule.getFactionRaceMap();
     }
@@ -99,7 +103,7 @@ public class World {
             do {
                 clearWorld();
                 generateWorldData();    
-            } while ((!setNeighbours() || !generateFactions()) && retries++ < 1000);
+            } while ((!setNeighbours() || !generateFactions()) && retries++ < MAX_RETRIES);
             
             setPaths();
             populateWorld();
@@ -107,10 +111,15 @@ public class World {
             notifyListeners(getWorldObjectList());
            
         } catch (Exception e) {
-            e.printStackTrace();
+            handleException("Error generating world", e);
         }
 
         System.out.println("World generated. " + retries + " retries.\n" );
+    }
+
+    private void handleException(String message, Exception e) {
+        System.err.println(message);
+        e.printStackTrace();
     }
     
     /**
@@ -168,7 +177,7 @@ public class World {
      */
     private void populateWorld() throws Exception {
         System.out.println("Populating world...");
-        GenerateWorld.populateWorld(settlements, paths);
+        GenerateWorld.populateWorld(settlements, paths, raceNameMap, factionRaceMap, npcList);
         System.out.println("World populated.");
     }
 
@@ -179,7 +188,7 @@ public class World {
         System.out.println("Evolving world...");
         for (int i = 0; i < 1; i++)    {  
             try{  
-                EvolveWorld.evolveWorld(worldObjectList,factions);
+                EvolveWorld.evolveWorld(worldObjectList,factions,npcList);
                 notifyListeners(worldObjectList); 
             } catch (Exception e) {  
                 e.printStackTrace();
@@ -215,6 +224,8 @@ public class World {
         worldObjectList.clear();
         settlements.clear();
         paths.clear();
+        factions.clear();
+        npcList.clear();
     }   
 
     /**

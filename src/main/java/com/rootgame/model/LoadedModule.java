@@ -15,11 +15,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javafx.scene.paint.Color;
 
 public class LoadedModule {
+
+    private static final String FACTION_KEY = "faction";
+    private static final String FACTIONS_KEY = "factions";
+    private static final String COLOR_KEY = "color";
+    private static final String RACES_KEY = "races";
+    private static final String NAME_KEY = "name";
+    private static final String FORENAMES_KEY = "forenames";
+    private static final String SURNAMES_KEY = "surnames";
+    private static final String SETTLEMENT_NAMES_KEY = "settlementnames";
+    private static final String WORLDOBJECTS_KEY = "worldobjects";
 
     private static Map<String, List<String>> factionRaceMap = new HashMap<>();
     private static Map<String, Color> factionColorMap = new HashMap<>();
@@ -46,11 +57,11 @@ public class LoadedModule {
     
             for (int i = 0; i < moduleArray.length(); i++) {
                 JSONObject worldJson = moduleArray.getJSONObject(i);
-                if (worldJson.has("worldobjects")) {
-                    parseWorldObjects(worldJson.getJSONArray("worldobjects"));
+                if (worldJson.has(WORLDOBJECTS_KEY)) {
+                    parseWorldObjects(worldJson.getJSONArray(WORLDOBJECTS_KEY));
                 }
-                if (worldJson.has("factions")) {
-                    parseFactions(worldJson.getJSONArray("factions"));
+                if (worldJson.has(FACTIONS_KEY)) {
+                    parseFactions(worldJson.getJSONArray(FACTIONS_KEY));
                 }
             }
         } catch (IOException e) {
@@ -86,7 +97,7 @@ public class LoadedModule {
     private static void parseWorldObjects(JSONArray worldObjectsArray){
         for (int i = 0; i < worldObjectsArray.length(); i++){
             JSONObject worldObjectJson = worldObjectsArray.getJSONObject(i);
-            cityNames = extractStringList(worldObjectJson, "settlementnames");
+            cityNames = extractStringList(worldObjectJson, SETTLEMENT_NAMES_KEY);
             System.out.println(cityNames);
         }
     }
@@ -101,7 +112,7 @@ public class LoadedModule {
     private static void parseFactions(JSONArray factionsArray){
         for (int i = 0; i < factionsArray.length(); i++){
             JSONObject factionsJson = factionsArray.getJSONObject(i);
-            String factionName = factionsJson.getString("faction");
+            String factionName = factionsJson.getString(FACTION_KEY);
             addFactionColor(factionsJson, factionName);
             addFactionRaces(factionsJson, factionName);
         }  
@@ -116,8 +127,12 @@ public class LoadedModule {
      * @param factionName The factionName parameter is a String that represents the name of a faction.
      */
     private static void addFactionColor(JSONObject factionsJson, String factionName){
-        Color factionColor = Color.web(factionsJson.getString("color"));
-        factionColorMap.put(factionName, factionColor);
+        try {
+            Color factionColor = Color.web(factionsJson.getString(COLOR_KEY));
+            factionColorMap.put(factionName, factionColor);
+        } catch (JSONException | IllegalArgumentException e) {
+            logger.error("Error adding faction color for {}: {}", factionName, e.getMessage());
+        }
     }
 
     /**
@@ -127,9 +142,9 @@ public class LoadedModule {
      * @param factionName The name of the faction for which we want to add races.
      */
     private static void addFactionRaces(JSONObject factionsJson,String factionName){
-        if (factionsJson.has("races")){
+        if (factionsJson.has(RACES_KEY)){
             List <String> races = new ArrayList<>();
-            JSONArray racesJsonArray = factionsJson.getJSONArray("races");
+            JSONArray racesJsonArray = factionsJson.getJSONArray(RACES_KEY);
             races = extractRaces(racesJsonArray, races);
             factionRaceMap.put(factionName, races);
         }
@@ -152,12 +167,12 @@ public class LoadedModule {
             JSONObject racesJsonObject = racesJsonArray.getJSONObject(j);
             String race = "";
 
-            if (racesJsonObject.has("name")){
-                race = racesJsonObject.getString("name");
+            if (racesJsonObject.has(NAME_KEY)){
+                race = racesJsonObject.getString(NAME_KEY);
                 races.add(race);
             }
-            forenamesSurenames.add(extractStringList(racesJsonObject, "forenames"));
-            forenamesSurenames.add(extractStringList(racesJsonObject, "surnames"));
+            forenamesSurenames.add(extractStringList(racesJsonObject, FORENAMES_KEY));
+            forenamesSurenames.add(extractStringList(racesJsonObject, SURNAMES_KEY));
 
             raceNameMap.putIfAbsent(race, forenamesSurenames);
         }  
@@ -208,7 +223,7 @@ public class LoadedModule {
      * 
      * @return The method is returning a List of Strings.
      */
-    public static List<String> getFactionList() {
+    public static List<String> getFactionNames() {
         Set<String> factionSet = factionRaceMap.keySet();
         return new ArrayList<>(factionSet);
     }

@@ -2,20 +2,21 @@ package com.rootgame.model.NPC;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-import com.rootgame.model.LoadedModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rootgame.model.World.WorldObjects.WorldObject;
 
 public class NPCFactory {
-
-    private Map<String, List<List<String>>> raceNameMap = LoadedModule.getRaceNameMap();
-    private Map<String, List<String>> factionRaceMap = LoadedModule.getFactionRaceMap();
-    private final String NEUTRAL = "Neutral";
-
-    public NPCFactory() {
-    }
+    private static final Logger logger = LoggerFactory.getLogger(NPCFactory.class);
     
+    private static final String NEUTRAL = "Neutral";
+    private static final int MAX_LOYALTY = 100;
+    private static final double FACTION_CHANGE_PROBABILITY = 0.5;
+    private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+
     /**
      * The function creates an NPC object with a random name, animal, loyalty, and faction based on the
      * NPCType and WorldObject parameters.
@@ -25,16 +26,15 @@ public class NPCFactory {
      * @param worldObject The world object that the NPC will be associated with or located in.
      * @return The method is returning an instance of the NPC class.
      */
-    public NPC createNPC(NPCType npcType, String faction, WorldObject worldObject) {
-        final int MAX_LOYALTY = 100;
+    public static NPC createNPC(NPCType npcType, String faction, WorldObject worldObject, Map<String, List<List<String>>> raceNameMap,Map<String, List<String>> factionRaceMap) {
+        
         String name;
-        String animal;
+        String species;
 
-        Random random = new Random();
         int loyalty = random.nextInt(MAX_LOYALTY);
         switch (npcType) {
             case CIVILIAN: case TRADER: case CARAVAN:
-                if (!NEUTRAL.equals(faction) && random.nextDouble() > 0.5)
+                if (!NEUTRAL.equals(faction) && random.nextDouble() > FACTION_CHANGE_PROBABILITY)
                     faction = NEUTRAL;
                 break;
             case BANDIT: case MERCENARY:
@@ -43,35 +43,51 @@ public class NPCFactory {
             default:  
                 break;
         }
-        //animal = factionRaceMap.get(faction).get((int) (Math.random() * LoadedModule.getFactionRaceMap().get(faction).size()));
-        int factionCount = LoadedModule.getFactionRaceMap().get(faction).size();
-        animal = factionRaceMap.get(faction).get(random.nextInt(factionCount));
-        name = getRandomName(animal);
-        NPC npc = new NPC(name, animal, npcType, faction, worldObject);
+        
+        species = getRandomSpecies(factionRaceMap,faction);
+        name = getRandomName(raceNameMap, species);
+        NPC npc = new NPC(name, species, npcType, faction, worldObject);
         npc.setLoyalty(loyalty);
         
         return npc;
     }
 
-    /**
-     * This Java function generates a random name for an animal based on its race and returns it as a
-     * string.
-     * 
-     * @param animal The parameter "animal" is a String representing the type of animal for which a
-     * random name is being generated.
-     * @return The method is returning a randomly generated name for a given animal, using lists of
-     * forenames and surnames specific to that animal's race. If there is an error (i.e. if there are
-     * not enough race names), the method returns the string "ERROR".
-     */
-    private String getRandomName(String animal) {
-        List<List<String>> raceNames = raceNameMap.get(animal);
-        if (raceNames.size() < 2) {
-            return "ERROR";
+    public static String getRandomName(Map<String, List<List<String>>> raceNameMap, String species) {
+        if (raceNameMap == null || species == null) {
+            throw new IllegalArgumentException("raceNameMap and species must not be null");
         }
+
+        List<List<String>> raceNames = raceNameMap.get(species);
+
+        if (raceNames == null || raceNames.size() < 2) {
+            logError("Invalid race name data for species: " + species);
+            throw new IllegalStateException("Invalid race name data for species");
+        }
+
         List<String> forenames = raceNames.get(0);
-        List<String> surenames = raceNames.get(1);
-        String forename = forenames.size() == 1? forenames.get(0) : forenames.get((int) (Math.random() * forenames.size()));
-        String surename = surenames.size() == 1? surenames.get(0) : surenames.get((int) (Math.random() * surenames.size()));
-        return forename + " " + surename;     
+        List<String> surnames = raceNames.get(1);
+
+        String forename = getRandomElement(forenames);
+        String surname = getRandomElement(surnames);
+
+        return forename + " " + surname;
+    }
+
+    private static String getRandomElement(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            logError("Invalid name list data");
+            throw new IllegalStateException("Invalid name list data");
+        }
+        return list.size() == 1 ? list.get(0) : list.get(random.nextInt(list.size()));
+    }
+
+    private static void logError(String errorMessage) {
+        logger.error("NameGenerator Error: {}", errorMessage);
+    }
+
+
+    private static String getRandomSpecies(Map<String, List<String>> factionRaceMap,String faction){
+        int factionCount = factionRaceMap.get(faction).size();
+        return factionRaceMap.get(faction).get(random.nextInt(factionCount));
     }
 }

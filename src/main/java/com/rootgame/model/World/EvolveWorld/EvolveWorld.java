@@ -13,10 +13,10 @@ public class EvolveWorld {
         throw new IllegalStateException("Utility class");
     }
     
-    public static void evolveWorld(List<WorldObject> worldObjectList, List<Faction> factions) {
-        evolveNPCs(worldObjectList);
+    public static void evolveWorld(List<WorldObject> worldObjectList, List<Faction> factionList, List<NPC> npcList) {
+        evolveNPCs(npcList,worldObjectList);
         evolveWorldObjects(worldObjectList);
-        evolveFactions(factions);
+        evolveFactions(factionList);
     }
 
 /***************
@@ -28,18 +28,10 @@ public class EvolveWorld {
      * 
      * @param worldObjectList A list of WorldObject objects.
      */
-    private static void evolveNPCs(List<WorldObject> worldObjectList) {
-
-        for (WorldObject worldObject : worldObjectList) {
-            List<NPC> npcList = worldObject.getNPCs();
-            for (int i = 0; i < npcList.size(); i++) {
-                evolveNPC(npcList.get(i), worldObjectList);
-            }
-        }   
-
-        worldObjectList.stream()
-            .flatMap(worldObject -> worldObject.getNPCs().stream())
-            .forEach(npc -> npc.setMoved(false));
+    private static void evolveNPCs(List<NPC> npcList,List<WorldObject> worldObjectList) {
+        for (int i = 0; i < npcList.size(); i++){
+            evolveNPC(npcList.get(i), worldObjectList);
+        }
     }
 
     /**
@@ -52,7 +44,6 @@ public class EvolveWorld {
     private static void evolveNPC(NPC npc, List<WorldObject> worldObjectList) {
         NPCEvolver evolver = NPCEvolverFactory.createEvolver(npc.getType());
         evolver.applyEvolution(npc, worldObjectList);
-        npc.setMoved(true);
     }
 
     private static void evolveWorldObjects(List<WorldObject> worldObjectList) {

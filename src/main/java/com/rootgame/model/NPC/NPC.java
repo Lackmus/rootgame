@@ -9,7 +9,7 @@ public class NPC {
     
     private String name;
     private String description;
-    private String race;
+    private String species;
     private String faction;
     private int combatStrength;
     private int marketValue;
@@ -21,9 +21,9 @@ public class NPC {
     private Queue<WorldObject> destinationPath;
     private boolean moved;
 
-    public NPC(String name, String race, NPCType npcType, String faction, WorldObject origin) {
+    public NPC(String name, String species, NPCType npcType, String faction, WorldObject origin) {
         this.name = name;
-        this.race = race;
+        this.species = species;
         this.faction = faction;
         this.npcType = npcType;
         this.origin = origin;
@@ -45,8 +45,8 @@ public class NPC {
         this.name = name;
     }
 
-    public void setAnimal(String race) {
-        this.race = race;
+    public void setSpecies(String species) {
+        this.species = species;
     }
 
     public String getDescription() {
@@ -100,8 +100,8 @@ public class NPC {
         return npcType;
     }
 
-    public String getRace() {
-        return race;
+    public String getSpecies() {
+        return species;
     }  
 
     public  void setCombatStrength(int combatStrength){
@@ -176,7 +176,7 @@ public class NPC {
         if (obj == this)
             return true;
         return this.name.equals(((NPC) obj).getName()) 
-            && this.race.equals(((NPC) obj).getRace())
+            && this.species.equals(((NPC) obj).getSpecies())
             && this.faction.equals(((NPC) obj).getFaction())
             && this.npcType.equals(((NPC) obj).getType())
             && this.origin.equals(((NPC) obj).getOrigin());
@@ -186,7 +186,7 @@ public class NPC {
     public String toString() {
         String loyaltyString = this.loyalty == -1 ? "" : this.loyalty < 25 ? "disloyal" : this.loyalty < 50 ? "unreliable" : this.loyalty < 75 ? "loyal" : "devoted";        
         return npcType + ", " + faction + ", Loyalty: " + loyaltyString +  
-            "\nName: " + name + ", Species: " + race +  
+            "\nName: " + name + ", Species: " + species +  
             (!destinationPath.isEmpty() ? "\nDestination: " + destinationPath.peek() : "") + 
             (!origin.equals(currentLocation) ? "\nOrigin: " + origin.getName() : "") + "\n";    
     }

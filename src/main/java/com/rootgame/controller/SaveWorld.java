@@ -58,7 +58,7 @@ public class SaveWorld {
                 npcObj.put("name", npc.getName());
                 npcObj.put("faction", npc.getFaction().toString());
                 npcObj.put("type", npc.getType().toString());
-                npcObj.put("race", npc.getRace().toString());
+                npcObj.put("race", npc.getSpecies().toString());
                 npcObj.put("loyalty", npc.getLoyalty());
                 npcObj.put("description", npc.getDescription());
                 npcObj.put("combatStrength", npc.getCombatStrength());
