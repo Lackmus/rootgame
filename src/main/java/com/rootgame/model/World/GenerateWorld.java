@@ -760,7 +760,8 @@ public class GenerateWorld {
     }
 
     private static void createAndAddNPC(NPCType type, String faction, WorldObject settlement) {
-        settlement.addNPC(NPCFactory.createNPC(type, faction, settlement));
+        NPCFactory npcFactory = new NPCFactory();
+        settlement.addNPC(npcFactory.createNPC(type, faction, settlement));
     }
 
     /**

@@ -76,7 +76,6 @@ public class LoadedModule {
         return new JSONArray(); // Return empty array if module not found
     }
 
-
     /**
      * The function parses a JSONArray of world objects, extracts the "settlementnames" field from each
      * object, and prints the resulting list of city names.

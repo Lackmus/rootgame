@@ -9,11 +9,11 @@ import com.rootgame.model.World.WorldObjects.WorldObject;
 
 public class NPCFactory {
 
-    private static Map<String, List<List<String>>> raceNameMap = LoadedModule.getRaceNameMap();
-    private static Map<String, List<String>> factionRaceMap = LoadedModule.getFactionRaceMap();
-    private final static String NEUTRAL = "Neutral";
+    private Map<String, List<List<String>>> raceNameMap = LoadedModule.getRaceNameMap();
+    private Map<String, List<String>> factionRaceMap = LoadedModule.getFactionRaceMap();
+    private final String NEUTRAL = "Neutral";
 
-    private NPCFactory() {
+    public NPCFactory() {
     }
     
     /**
@@ -25,11 +25,11 @@ public class NPCFactory {
      * @param worldObject The world object that the NPC will be associated with or located in.
      * @return The method is returning an instance of the NPC class.
      */
-    public static NPC createNPC(NPCType npcType, String faction, WorldObject worldObject) {
+    public NPC createNPC(NPCType npcType, String faction, WorldObject worldObject) {
         final int MAX_LOYALTY = 100;
         String name;
         String animal;
-        //int loyalty = (int) (Math.random() * 100);
+
         Random random = new Random();
         int loyalty = random.nextInt(MAX_LOYALTY);
         switch (npcType) {
@@ -63,7 +63,7 @@ public class NPCFactory {
      * forenames and surnames specific to that animal's race. If there is an error (i.e. if there are
      * not enough race names), the method returns the string "ERROR".
      */
-    private static String getRandomName(String animal) {
+    private String getRandomName(String animal) {
         List<List<String>> raceNames = raceNameMap.get(animal);
         if (raceNames.size() < 2) {
             return "ERROR";

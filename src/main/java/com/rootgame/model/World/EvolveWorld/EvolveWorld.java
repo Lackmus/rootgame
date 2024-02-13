@@ -2,6 +2,7 @@ package com.rootgame.model.World.EvolveWorld;
 
 import java.util.List;
 
+import com.rootgame.model.Faction.Faction;
 import com.rootgame.model.NPC.NPC;
 import com.rootgame.model.World.EvolveWorld.NPCEvolver.NPCEvolver;
 import com.rootgame.model.World.EvolveWorld.NPCEvolver.NPCEvolverFactory;
@@ -12,8 +13,10 @@ public class EvolveWorld {
         throw new IllegalStateException("Utility class");
     }
     
-    public static void evolveWorld(List<WorldObject> worldObjectList) {
+    public static void evolveWorld(List<WorldObject> worldObjectList, List<Faction> factions) {
         evolveNPCs(worldObjectList);
+        evolveWorldObjects(worldObjectList);
+        evolveFactions(factions);
     }
 
 /***************
@@ -52,19 +55,24 @@ public class EvolveWorld {
         npc.setMoved(true);
     }
 
-    private static void evolveWorldObjects() {
+    private static void evolveWorldObjects(List<WorldObject> worldObjectList) {
         //TODO 
+        for (WorldObject worldObject : worldObjectList) {
+            evolveWorldObject(worldObject);
+        }
     }
 
     private static void evolveWorldObject(WorldObject worldObject) {
         //TODO
     }
 
-    private static void evolveFactions() {
-        //TODO
+    private static void evolveFactions(List<Faction> factions) {
+        for (Faction faction : factions){
+            evolveFaction(faction);
+        }
     }
    
-    private static void evolveFaction(String faction) {
+    private static void evolveFaction(Faction faction) {
         //TODO
     }
     

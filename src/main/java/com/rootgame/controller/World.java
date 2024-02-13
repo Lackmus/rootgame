@@ -2,10 +2,13 @@ package com.rootgame.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.rootgame.controller.MyObservable.ListUpdateEvent;
 import com.rootgame.controller.MyObservable.ListUpdateListener;
 import com.rootgame.model.LoadedModule;
+import com.rootgame.model.Faction.Faction;
+import com.rootgame.model.NPC.NPC;
 import com.rootgame.model.World.GenerateWorld;
 import com.rootgame.model.World.EvolveWorld.EvolveWorld;
 import com.rootgame.model.World.WorldObjects.WorldObject;
@@ -18,16 +21,19 @@ public class World {
     private List<WorldObject> worldObjectList;
     private List<WorldObject> settlements;   // List of settlement objects
     private List<WorldObject> paths;           // List of Path objects
+    private List<Faction> factions;
+    private List<NPC> npcs;
 
     private int mapX;                   // Width of the world
     private int mapY;                   // Height of the world
     
     private List<String> settlementNames; // List of settlement names
-    private List<String> factions;     // List of factions
+    private List<String> factionNames; 
+    private Map<String, List<List<String>>> raceNameMap;
+    private Map<String, List<String>> factionRaceMap;    // List of factions
     
     public World (int mapX, int mapY) {
-        settlementNames = LoadedModule.getSettlementNames();
-        factions = LoadedModule.getFactionList();
+        loadModule();
         listeners = new ArrayList<>();
         this.mapX = mapX;
         this.mapY = mapY;
@@ -35,7 +41,15 @@ public class World {
         
         worldObjectList = new ArrayList<>();
         settlements = new ArrayList<>();
-        paths = new ArrayList<>();      
+        paths = new ArrayList<>();    
+        factions =  new ArrayList<>();
+    }
+
+    private void loadModule(){
+        settlementNames = LoadedModule.getSettlementNames();
+        factionNames = LoadedModule.getFactionList();
+        raceNameMap = LoadedModule.getRaceNameMap();
+        factionRaceMap = LoadedModule.getFactionRaceMap();
     }
 
     /**
@@ -140,7 +154,7 @@ public class World {
      */
     private boolean generateFactions() throws Exception {
         System.out.println("Generating Factions...");
-        if (GenerateWorld.generateFactions(settlements, paths, factions)){
+        if (GenerateWorld.generateFactions(settlements, paths, factionNames)){
             System.out.println("Factions generated.");
             return true;
         }
@@ -165,7 +179,7 @@ public class World {
         System.out.println("Evolving world...");
         for (int i = 0; i < 1; i++)    {  
             try{  
-                EvolveWorld.evolveWorld(worldObjectList);
+                EvolveWorld.evolveWorld(worldObjectList,factions);
                 notifyListeners(worldObjectList); 
             } catch (Exception e) {  
                 e.printStackTrace();
