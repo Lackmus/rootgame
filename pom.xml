@@ -22,7 +22,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
+            <version>1.4.12</version>
         </dependency>
 
         <!--  -->
@@ -32,11 +32,11 @@
             <version>5.0.0-alpha.11</version>
         </dependency>
 
-        <!--  -->
+        <!-- Jackson for JSON processing (replaces org.json) -->
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20230227</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
         </dependency>
 
          <!--  -->
@@ -78,7 +78,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.rootgame.App</mainClass>
+                            <mainClass>com.rootgame.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

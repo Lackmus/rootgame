@@ -1,8 +1,8 @@
 package com.rootgame.controller;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import com.rootgame.model.NPC.NPC;
 import com.rootgame.model.NPC.NPCType;
@@ -29,21 +29,21 @@ public class LoadWorld {
      * @param paths A List of Path objects that will be populated with data from the JSON file.
      */
     public static void loadFromJson(String nameOfJson, List<WorldObject> settlements, List<WorldObject> paths) {
+        ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonData = new String(Files.readAllBytes(Paths.get(nameOfJson)));
-            JSONArray objectArray = new JSONArray(jsonData);
+            ArrayNode objectArray = (ArrayNode) mapper.readTree(jsonData);
 
             Map<String, List<String>> neighbourMap = new HashMap<>();
             Map<String, WorldObject> settlementLookupMap = new HashMap<>();
             Map<String, List<String>> destinationPathMap = new HashMap<>();
 
-            for (int i = 0; i < objectArray.length(); i++) {
-                JSONObject objectJson = objectArray.getJSONObject(i);
+            for (JsonNode objectJson : objectArray) {
 
-                String name = objectJson.getString("name");
-                int x = objectJson.getInt("x");
-                int y = objectJson.getInt("y");
-                WorldObject.Type type = WorldObject.Type.valueOf(objectJson.getString("type"));
+                String name = objectJson.get("name").asText();
+                int x = objectJson.get("x").asInt();
+                int y = objectJson.get("y").asInt();
+                WorldObject.Type type = WorldObject.Type.valueOf(objectJson.get("type").asText());
 
                 WorldObject worldObject;
                 switch (type) {
@@ -60,17 +60,17 @@ public class LoadWorld {
                         throw new IllegalArgumentException("Invalid object type: " + type);
                 }
 
-                worldObject.setFaction(objectJson.getString("faction"));
-                worldObject.setCombatStrength(objectJson.getInt("combatStrength"));
-                worldObject.setMarketValue(objectJson.getInt("marketValue"));
-                worldObject.setLoyalty(objectJson.getInt("loyalty"));
-                worldObject.setBesieged(objectJson.getBoolean("besieged"));
-                worldObject.setSiegeTimer(objectJson.getInt("siegeTimer"));
-                worldObject.setRuined(objectJson.getBoolean("ruined"));
-                worldObject.setRuinTimer(objectJson.getInt("ruinTimer"));
-                worldObject.setCapital(objectJson.getBoolean("isCapital"));
-                worldObject.setCurrentPopulation(objectJson.getInt("currentPopulation"));
-                worldObject.setDescription(objectJson.getString("description"));
+                worldObject.setFaction(objectJson.get("faction").asText());
+                worldObject.setCombatStrength(objectJson.get("combatStrength").asInt());
+                worldObject.setMarketValue(objectJson.get("marketValue").asInt());
+                worldObject.setLoyalty(objectJson.get("loyalty").asInt());
+                worldObject.setBesieged(objectJson.get("besieged").asBoolean());
+                worldObject.setSiegeTimer(objectJson.get("siegeTimer").asInt());
+                worldObject.setRuined(objectJson.get("ruined").asBoolean());
+                worldObject.setRuinTimer(objectJson.get("ruinTimer").asInt());
+                worldObject.setCapital(objectJson.get("isCapital").asBoolean());
+                worldObject.setCurrentPopulation(objectJson.get("currentPopulation").asInt());
+                worldObject.setDescription(objectJson.get("description").asText());
 
                 List<NPC> npcs = parseNPCs(objectJson, worldObject, destinationPathMap);
                 worldObject.setNPCs(npcs);
@@ -81,7 +81,7 @@ public class LoadWorld {
 
             addNeighbours(settlements, paths, settlementLookupMap, neighbourMap);
             setNPCPaths(settlements, paths, destinationPathMap, settlementLookupMap);
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -95,13 +95,11 @@ public class LoadWorld {
      * @return The method is returning a List of Strings, which represents the neighbours of a given
      * object in JSON format.
      */
-    private static List<String> parseNeighbours (JSONObject objectJson) throws JSONException {
+    private static List<String> parseNeighbours (JsonNode objectJson) {
         List<String> neighbours = new ArrayList<>();
-        if (objectJson.has("neighbours")) {
-            JSONArray neighboursJson = objectJson.getJSONArray("neighbours");
-            for (int j = 0; j < neighboursJson.length(); j++) {
-                String neighbour = neighboursJson.getString(j);
-                neighbours.add(neighbour);
+        if (objectJson.has("neighbours") && objectJson.get("neighbours").isArray()) {
+            for (JsonNode neighboursJson : objectJson.withArray("neighbours")) {
+                neighbours.add(neighboursJson.asText());
             }
         }
         return neighbours;
@@ -113,32 +111,26 @@ public class LoadWorld {
      * @param objectJson A JSONObject containing information about NPCs.
      * @return The method is returning a List of NPC objects.
      */
-    private static List<NPC> parseNPCs(JSONObject objectJson, WorldObject worldObject, Map<String, List<String>> destinationPathMap) throws JSONException {
+    private static List<NPC> parseNPCs(JsonNode objectJson, WorldObject worldObject, Map<String, List<String>> destinationPathMap) {
 
         List<NPC> npcs = new ArrayList<>();
-        if (objectJson.has("npcs")) {
-            JSONArray npcArray = objectJson.getJSONArray("npcs");
-            for (int j = 0; j < npcArray.length(); j++) {
-                JSONObject npcJson = npcArray.getJSONObject(j);
-                int npcCombatStrength = npcJson.getInt("combatStrength");
-                int npcMarketValue = npcJson.getInt("marketValue");
+        if (objectJson.has("npcs") && objectJson.get("npcs").isArray()) {
+            for (JsonNode npcJson : objectJson.withArray("npcs")) {
+                int npcCombatStrength = npcJson.get("combatStrength").asInt();
+                int npcMarketValue = npcJson.get("marketValue").asInt();
 
 
-                NPC npc = new NPC(npcJson.getString("name"), npcJson.getString("race"), NPCType.valueOf(npcJson.getString("type")),
-                                  npcJson.getString("faction"), worldObject);
+                NPC npc = new NPC(npcJson.get("name").asText(), npcJson.get("race").asText(), NPCType.valueOf(npcJson.get("type").asText()),
+                                  npcJson.get("faction").asText(), worldObject);
 
-                npc.setLoyalty(npcJson.getInt("loyalty"));
-                npc.setDescription(npcJson.getString("description"));
+                npc.setLoyalty(npcJson.get("loyalty").asInt());
+                npc.setDescription(npcJson.get("description").asText());
                 npc.setCombatStrength(npcCombatStrength);
                 npc.setMarketValue(npcMarketValue);
-                //npc.setOrigin(worldObject);
-                //npc.setCurrentLocation(worldObject);
-                if (npcJson.has("destinationPath")) {
-                    JSONArray destinationPathArray = npcJson.getJSONArray("destinationPath");
+                if (npcJson.has("destinationPath") && npcJson.get("destinationPath").isArray()) {
                     List<String> destinationPath = new ArrayList<>();
-                    for (int k = 0; k < destinationPathArray.length(); k++) {
-                        String destinationName = destinationPathArray.getString(k);
-                        destinationPath.add(destinationName);
+                    for (JsonNode destinationNameNode : npcJson.withArray("destinationPath")) {
+                        destinationPath.add(destinationNameNode.asText());
                     }
                     destinationPathMap.put(npc.getName(), destinationPath);
                 }

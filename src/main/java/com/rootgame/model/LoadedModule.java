@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.scene.paint.Color;
 
@@ -49,19 +49,19 @@ public class LoadedModule {
      * module.
      */
     public static void loadModule(String module) {
+        ObjectMapper mapper = new ObjectMapper();
         try (Stream<String> lines = Files.lines(Paths.get("FactionRaces.json"))) {
             String jsonData = lines.collect(Collectors.joining());
-            JSONArray objectArray = new JSONArray(jsonData);
-    
-            JSONArray moduleArray = findModuleArray(module, objectArray);
-    
-            for (int i = 0; i < moduleArray.length(); i++) {
-                JSONObject worldJson = moduleArray.getJSONObject(i);
+            ArrayNode objectArray = (ArrayNode) mapper.readTree(jsonData);
+
+            ArrayNode moduleArray = findModuleArray(module, objectArray);
+
+            for (JsonNode worldJson : moduleArray) {
                 if (worldJson.has(WORLDOBJECTS_KEY)) {
-                    parseWorldObjects(worldJson.getJSONArray(WORLDOBJECTS_KEY));
+                    parseWorldObjects((ArrayNode) worldJson.get(WORLDOBJECTS_KEY));
                 }
                 if (worldJson.has(FACTIONS_KEY)) {
-                    parseFactions(worldJson.getJSONArray(FACTIONS_KEY));
+                    parseFactions((ArrayNode) worldJson.get(FACTIONS_KEY));
                 }
             }
         } catch (IOException e) {
@@ -77,14 +77,13 @@ public class LoadedModule {
      * module and contains an array with the key "module".
      * @return The method `findModuleArray` returns a `JSONArray` object.
      */
-    private static JSONArray findModuleArray(String module, JSONArray objectArray) {
-        for (int i = 0; i < objectArray.length(); i++) {
-            JSONObject moduleJson = objectArray.getJSONObject(i);
-            if (moduleJson.has(module)) {
-                return moduleJson.getJSONArray(module);
+    private static ArrayNode findModuleArray(String module, ArrayNode objectArray) {
+        for (JsonNode moduleJson : objectArray) {
+            if (moduleJson.has(module) && moduleJson.get(module).isArray()) {
+                return (ArrayNode) moduleJson.get(module);
             }
         }
-        return new JSONArray(); // Return empty array if module not found
+        return new ObjectMapper().createArrayNode(); // Return empty array if module not found
     }
 
     /**
@@ -94,9 +93,8 @@ public class LoadedModule {
      * @param worldObjectsArray A JSONArray containing a list of world objects in JSON format. Each
      * world object is represented by a JSONObject.
      */
-    private static void parseWorldObjects(JSONArray worldObjectsArray){
-        for (int i = 0; i < worldObjectsArray.length(); i++){
-            JSONObject worldObjectJson = worldObjectsArray.getJSONObject(i);
+    private static void parseWorldObjects(ArrayNode worldObjectsArray){
+        for (JsonNode worldObjectJson : worldObjectsArray){
             cityNames = extractStringList(worldObjectJson, SETTLEMENT_NAMES_KEY);
             System.out.println(cityNames);
         }
@@ -109,13 +107,12 @@ public class LoadedModule {
      * @param factionsArray The factionsArray parameter is a JSONArray object that contains a list of
      * factions in JSON format.
      */
-    private static void parseFactions(JSONArray factionsArray){
-        for (int i = 0; i < factionsArray.length(); i++){
-            JSONObject factionsJson = factionsArray.getJSONObject(i);
-            String factionName = factionsJson.getString(FACTION_KEY);
+    private static void parseFactions(ArrayNode factionsArray){
+        for (JsonNode factionsJson : factionsArray){
+            String factionName = factionsJson.get(FACTION_KEY).asText();
             addFactionColor(factionsJson, factionName);
             addFactionRaces(factionsJson, factionName);
-        }  
+        }
     }
 
     /**
@@ -126,11 +123,11 @@ public class LoadedModule {
      * and colors.
      * @param factionName The factionName parameter is a String that represents the name of a faction.
      */
-    private static void addFactionColor(JSONObject factionsJson, String factionName){
+    private static void addFactionColor(JsonNode factionsJson, String factionName){
         try {
-            Color factionColor = Color.web(factionsJson.getString(COLOR_KEY));
+            Color factionColor = Color.web(factionsJson.get(COLOR_KEY).asText());
             factionColorMap.put(factionName, factionColor);
-        } catch (JSONException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             logger.error("Error adding faction color for {}: {}", factionName, e.getMessage());
         }
     }
@@ -141,10 +138,10 @@ public class LoadedModule {
      * @param factionsJson A JSONObject containing information about factions and their races.
      * @param factionName The name of the faction for which we want to add races.
      */
-    private static void addFactionRaces(JSONObject factionsJson,String factionName){
-        if (factionsJson.has(RACES_KEY)){
+    private static void addFactionRaces(JsonNode factionsJson,String factionName){
+        if (factionsJson.has(RACES_KEY) && factionsJson.get(RACES_KEY).isArray()){
             List <String> races = new ArrayList<>();
-            JSONArray racesJsonArray = factionsJson.getJSONArray(RACES_KEY);
+            ArrayNode racesJsonArray = (ArrayNode) factionsJson.get(RACES_KEY);
             races = extractRaces(racesJsonArray, races);
             factionRaceMap.put(factionName, races);
         }
@@ -160,22 +157,21 @@ public class LoadedModule {
      * @return The method is returning a List<String> containing the races extracted from the
      * racesJsonArray.
      */
-    private static List<String> extractRaces(JSONArray racesJsonArray, List<String> races) {
-        for (int j = 0; j < racesJsonArray.length(); j++) {
+    private static List<String> extractRaces(ArrayNode racesJsonArray, List<String> races) {
+        for (JsonNode racesJsonObject : racesJsonArray) {
             List<List<String>> forenamesSurenames = new ArrayList<>();
 
-            JSONObject racesJsonObject = racesJsonArray.getJSONObject(j);
             String race = "";
 
             if (racesJsonObject.has(NAME_KEY)){
-                race = racesJsonObject.getString(NAME_KEY);
+                race = racesJsonObject.get(NAME_KEY).asText();
                 races.add(race);
             }
             forenamesSurenames.add(extractStringList(racesJsonObject, FORENAMES_KEY));
             forenamesSurenames.add(extractStringList(racesJsonObject, SURNAMES_KEY));
 
             raceNameMap.putIfAbsent(race, forenamesSurenames);
-        }  
+        }
         return races;
     }
 
@@ -187,12 +183,11 @@ public class LoadedModule {
      * in the `racesJsonObject`.
      * @return The method is returning a List of Strings.
      */
-    private static List<String> extractStringList(JSONObject racesJsonObject, String jsonString) {
+    private static List<String> extractStringList(JsonNode racesJsonObject, String jsonString) {
         List<String> list = new ArrayList<>();
-        if (!racesJsonObject.isNull(jsonString)){
-            JSONArray jsonArray = racesJsonObject.getJSONArray(jsonString);
-            for (Object item : jsonArray) {
-                list.add(item.toString());
+        if (racesJsonObject.has(jsonString) && racesJsonObject.get(jsonString).isArray()){
+            for (JsonNode item : racesJsonObject.withArray(jsonString)) {
+                list.add(item.asText());
             }
         }
         return list;

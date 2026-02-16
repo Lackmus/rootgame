@@ -1,7 +1,8 @@
 package com.rootgame.controller;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,11 +21,12 @@ public class SaveWorld {
      */
     public static void saveToJSON(String nameOfJSON, List<WorldObject> worldObjectList) {
         
-        JSONArray worldArray = new JSONArray();
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode worldArray = mapper.createArrayNode();
 
         // Iterate over the worldObjectList and create JSON objects for each WorldObject
         for (WorldObject worldObject : worldObjectList) {
-            JSONObject worldObjectObj = new JSONObject();
+            ObjectNode worldObjectObj = mapper.createObjectNode();
             worldObjectObj.put("type", worldObject.getType().toString());
             worldObjectObj.put("name", worldObject.getName());
             worldObjectObj.put("x", worldObject.getX());
@@ -44,17 +46,17 @@ public class SaveWorld {
             
 
             // Create and append neighbours array
-            JSONArray neighboursArray = new JSONArray();
+            ArrayNode neighboursArray = mapper.createArrayNode();
             for (WorldObject neighbour : worldObject.getNeighbours()) {
-                neighboursArray.put(neighbour.getName());
+                neighboursArray.add(neighbour.getName());
             }
-            worldObjectObj.put("neighbours", neighboursArray);
+            worldObjectObj.set("neighbours", neighboursArray);
 
             // Create and append npcs array
-            JSONArray npcsArray = new JSONArray();
+            ArrayNode npcsArray = mapper.createArrayNode();
             for (NPC npc : worldObject.getNPCs()) {
-                JSONObject npcObj = new JSONObject();
-                
+                ObjectNode npcObj = mapper.createObjectNode();
+
                 npcObj.put("name", npc.getName());
                 npcObj.put("faction", npc.getFaction().toString());
                 npcObj.put("type", npc.getType().toString());
@@ -66,22 +68,22 @@ public class SaveWorld {
                 npcObj.put("currentLocation", npc.getCurrentLocation().getName());
                 npcObj.put("origin", npc.getOrigin().getName());
 
-                JSONArray destinationPathArray = new JSONArray();
+                ArrayNode destinationPathArray = mapper.createArrayNode();
                 for (WorldObject destination : npc.getDestinationPath()) {
-                    destinationPathArray.put(destination.getName());
+                    destinationPathArray.add(destination.getName());
                 }
-                npcObj.put("destinationPath", destinationPathArray);
+                npcObj.set("destinationPath", destinationPathArray);
 
-                npcsArray.put(npcObj);
+                npcsArray.add(npcObj);
             }
-            worldObjectObj.put("npcs", npcsArray);
+            worldObjectObj.set("npcs", npcsArray);
 
-            worldArray.put(worldObjectObj);
+            worldArray.add(worldObjectObj);
         }
 
         // Write the JSON data to a file
         try (FileWriter fileWriter = new FileWriter(nameOfJSON)) {
-            fileWriter.write(worldArray.toString(4)); // Use 4 for indentation level
+            fileWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(worldArray));
             fileWriter.flush();
             System.out.println("JSON file saved successfully.");
         } catch (IOException e) {
