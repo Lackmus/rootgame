@@ -14,8 +14,8 @@ com\rootgame\controller\World.class
 com\rootgame\model\NPC\NPC.class
 com\rootgame\model\World\EvolveWorld\NPCEvolver\CaravanEvolver.class
 com\rootgame\view\MapPane.class
-com\rootgame\model\World\EvolveWorld\NPCEvolver\NPCPathManager.class
 com\rootgame\model\World\EvolveWorld\NPCEvolver\TraderEvolver.class
+com\rootgame\model\World\EvolveWorld\NPCEvolver\NPCPathManager.class
 com\rootgame\model\World\GenerateWorld.class
 com\rootgame\controller\LoadWorld.class
 com\rootgame\model\NPC\NPCFactory.class
@@ -27,10 +27,10 @@ com\rootgame\model\LoadedModule.class
 com\rootgame\Main.class
 com\rootgame\model\World\WorldObjects\Settlement.class
 com\rootgame\model\World\WorldObjects\WorldObjectFactory$1.class
-com\rootgame\model\World\EvolveWorld\NPCEvolver\CivilianEvolver.class
 com\rootgame\model\World\WorldObjects\Path.class
+com\rootgame\model\World\EvolveWorld\NPCEvolver\CivilianEvolver.class
 com\rootgame\controller\MyObservable\ListUpdateListener.class
 com\rootgame\controller\SaveWorld.class
-com\rootgame\controller\LoadWorld$1.class
 com\rootgame\model\World\EvolveWorld\NPCEvolver\NPCEvolver.class
 com\rootgame\model\World\EvolveWorld\NPCEvolver\MercenaryEvolver.class
+com\rootgame\controller\LoadWorld$1.class
